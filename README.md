@@ -1,2 +1,2 @@
-# SpringBoot-web-server
+# Backend
 SpringBoot기반 web server (Back-end)
