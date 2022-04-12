@@ -2,11 +2,13 @@ package com.graduatioinProject.sensorMonitoring.node.formerData;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Getter
+@Setter
 public class FormerData {
     private LocalDate date;
     private Long nodePort;

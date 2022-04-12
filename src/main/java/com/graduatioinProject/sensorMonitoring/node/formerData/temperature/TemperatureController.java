@@ -13,7 +13,7 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/formerData")
+@RequestMapping("api/node/formerData")
 public class TemperatureController {
 
     private final TemperatureService temperatureDataService;
@@ -26,7 +26,7 @@ public class TemperatureController {
         Long nodePort = Long.valueOf((String) body.get("nodePort"));
 
         /**
-         * 요청한 유저가 해당 NodePort에 접근권한이 있는지 확인 해야함.
+         * 요청한 유저가 해당 NodePort에 접근권한이 있는지 확인 해야함.(Site 단위로 체크 해도 괜찮지 않을까??)
          */
 
         try {
@@ -39,7 +39,7 @@ public class TemperatureController {
     }
 
 //    @GetMapping("/temperature")
-//    public SingleResult<TemperatureData> getTemperature(@RequestBody HashMap<String, Object> body) {
+//    public SingleResult<Temperature> getTemperature(@RequestBody HashMap<String, Object> body) {
 //        LocalDate date = LocalDate.parse((String) body.get("date"), DateTimeFormatter.ISO_DATE);
 //        int nodePort = Integer.parseInt((String) body.get("port"));
 //        try {
