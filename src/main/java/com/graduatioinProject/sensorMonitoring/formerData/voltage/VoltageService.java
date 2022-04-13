@@ -1,6 +1,5 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.voltage;
+package com.graduatioinProject.sensorMonitoring.formerData.voltage;
 
-import com.graduatioinProject.sensorMonitoring.node.formerData.electricCurrent.ElectricCurrent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

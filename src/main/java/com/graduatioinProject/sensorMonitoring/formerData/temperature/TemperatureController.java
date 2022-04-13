@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.temperature;
+package com.graduatioinProject.sensorMonitoring.formerData.temperature;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
@@ -13,7 +13,7 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/node/formerData")
+@RequestMapping("api/formerData")
 public class TemperatureController {
 
     private final TemperatureService temperatureDataService;

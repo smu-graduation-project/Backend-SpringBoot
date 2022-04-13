@@ -1,7 +1,7 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.temperature;
+package com.graduatioinProject.sensorMonitoring.formerData.temperature;
 
 
-import com.graduatioinProject.sensorMonitoring.node.formerData.FormerData;
+import com.graduatioinProject.sensorMonitoring.formerData.FormerData;
 import lombok.*;
 
 import javax.persistence.Column;

@@ -1,9 +1,8 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.voltage;
+package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
-import com.graduatioinProject.sensorMonitoring.node.formerData.electricCurrent.ElectricCurrent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +16,13 @@ import java.util.HashMap;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/formerData")
-public class VoltageController {
+public class ElectricCurrentController {
 
-    private final VoltageService voltageService;
+    private final ElectricCurrentService electricCurrentService;
     private final ResponseService responseService;
 
-    @GetMapping("/voltageList")
-    public ListResult<Voltage> getElectricCurrentList(@RequestBody HashMap<String, Object> body) {
+    @GetMapping("/electricCurrentList")
+    public ListResult<ElectricCurrent> getElectricCurrentList(@RequestBody HashMap<String, Object> body) {
         LocalDate start = LocalDate.parse((String) body.get("startDate"), DateTimeFormatter.ISO_DATE);
         LocalDate end = LocalDate.parse((String) body.get("endDate"), DateTimeFormatter.ISO_DATE);
         Long nodePort = Long.valueOf((String) body.get("nodePort"));
@@ -36,7 +35,7 @@ public class VoltageController {
 
         try {
             return  responseService.listResult(
-                    voltageService.findVoltageList(start,end, nodePort));
+                    electricCurrentService.findElectricCurrentList(start,end, nodePort));
         } catch (Exception e) {
             e.printStackTrace();
             throw new BussinessException(e.getMessage());

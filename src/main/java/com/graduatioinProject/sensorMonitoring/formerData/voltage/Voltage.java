@@ -1,6 +1,6 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.voltage;
+package com.graduatioinProject.sensorMonitoring.formerData.voltage;
 
-import com.graduatioinProject.sensorMonitoring.node.formerData.FormerData;
+import com.graduatioinProject.sensorMonitoring.formerData.FormerData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

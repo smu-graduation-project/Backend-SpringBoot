@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.temperature;
+package com.graduatioinProject.sensorMonitoring.formerData.temperature;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

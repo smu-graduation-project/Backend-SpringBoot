@@ -1,7 +1,6 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.temperature;
+package com.graduatioinProject.sensorMonitoring.formerData.temperature;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

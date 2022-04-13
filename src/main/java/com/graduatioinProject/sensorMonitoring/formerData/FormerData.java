@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData;
+package com.graduatioinProject.sensorMonitoring.formerData;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

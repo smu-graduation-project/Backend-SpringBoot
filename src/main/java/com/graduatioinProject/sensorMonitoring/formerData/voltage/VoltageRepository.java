@@ -1,6 +1,5 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.voltage;
+package com.graduatioinProject.sensorMonitoring.formerData.voltage;
 
-import com.graduatioinProject.sensorMonitoring.node.formerData.electricCurrent.ElectricCurrent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

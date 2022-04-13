@@ -1,6 +1,6 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.electricCurrent;
+package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent;
 
-import com.graduatioinProject.sensorMonitoring.node.formerData.FormerData;
+import com.graduatioinProject.sensorMonitoring.formerData.FormerData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

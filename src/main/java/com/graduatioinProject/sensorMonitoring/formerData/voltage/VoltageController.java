@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.node.formerData.electricCurrent;
+package com.graduatioinProject.sensorMonitoring.formerData.voltage;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
@@ -16,13 +16,13 @@ import java.util.HashMap;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/formerData")
-public class ElectricCurrentController {
+public class VoltageController {
 
-    private final ElectricCurrentService electricCurrentService;
+    private final VoltageService voltageService;
     private final ResponseService responseService;
 
-    @GetMapping("/electricCurrentList")
-    public ListResult<ElectricCurrent> getElectricCurrentList(@RequestBody HashMap<String, Object> body) {
+    @GetMapping("/voltageList")
+    public ListResult<Voltage> getElectricCurrentList(@RequestBody HashMap<String, Object> body) {
         LocalDate start = LocalDate.parse((String) body.get("startDate"), DateTimeFormatter.ISO_DATE);
         LocalDate end = LocalDate.parse((String) body.get("endDate"), DateTimeFormatter.ISO_DATE);
         Long nodePort = Long.valueOf((String) body.get("nodePort"));
@@ -35,7 +35,7 @@ public class ElectricCurrentController {
 
         try {
             return  responseService.listResult(
-                    electricCurrentService.findElectricCurrentList(start,end, nodePort));
+                    voltageService.findVoltageList(start,end, nodePort));
         } catch (Exception e) {
             e.printStackTrace();
             throw new BussinessException(e.getMessage());
