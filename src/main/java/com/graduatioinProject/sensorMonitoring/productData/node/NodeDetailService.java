@@ -13,4 +13,9 @@ public class NodeDetailService {
     public Optional<NodeDetail> findNodeDetail(Long nodePort) {
         return nodeDetailRepository.findByNodePort(nodePort);
     }
+
+    public Long setNodeDetail(NodeDetail nodeDetail) {
+        nodeDetailRepository.save(nodeDetail);
+        return nodeDetail.getNodeId();
+    }
 }
