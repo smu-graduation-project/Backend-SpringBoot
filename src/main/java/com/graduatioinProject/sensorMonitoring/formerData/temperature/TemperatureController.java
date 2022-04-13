@@ -13,13 +13,13 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/formerData")
+@RequestMapping("api/formerData/temperature")
 public class TemperatureController {
 
     private final TemperatureService temperatureDataService;
     private final ResponseService responseService;
 
-    @GetMapping("/temperatureList")
+    @GetMapping("/list")
     public ListResult<Temperature> getTemperatureList(@RequestBody HashMap<String, Object> body) {
         LocalDate start = LocalDate.parse((String) body.get("startDate"), DateTimeFormatter.ISO_DATE);
         LocalDate end = LocalDate.parse((String) body.get("endDate"), DateTimeFormatter.ISO_DATE);

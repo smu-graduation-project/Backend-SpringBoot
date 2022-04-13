@@ -15,13 +15,13 @@ import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/formerData")
+@RequestMapping("api/formerData/voltage")
 public class VoltageController {
 
     private final VoltageService voltageService;
     private final ResponseService responseService;
 
-    @GetMapping("/voltageList")
+    @GetMapping("/list")
     public ListResult<Voltage> getElectricCurrentList(@RequestBody HashMap<String, Object> body) {
         LocalDate start = LocalDate.parse((String) body.get("startDate"), DateTimeFormatter.ISO_DATE);
         LocalDate end = LocalDate.parse((String) body.get("endDate"), DateTimeFormatter.ISO_DATE);
