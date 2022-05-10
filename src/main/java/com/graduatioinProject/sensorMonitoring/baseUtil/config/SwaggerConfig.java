@@ -19,7 +19,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(swaggerInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("sigma.Spring_backend"))
+                .apis(RequestHandlerSelectors.basePackage("com.graduatioinProject.sensorMonitoring"))
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(false);
@@ -27,10 +27,10 @@ public class SwaggerConfig {
 
     private ApiInfo swaggerInfo() {
         return new ApiInfoBuilder()
-                .title("Sigma API Documentation")
-                .description("Sigma 서버 API 문서입니다.")
-                .license("Sigma")
-                .licenseUrl("sigma.ma")
+                .title("BCMS API Documentation")
+                .description("BCMS 서버 API 문서입니다.")
+                .license("BCMS")
+                .licenseUrl("BCMS")
                 .version("1")
                 .build();
     }
