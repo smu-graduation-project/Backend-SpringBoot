@@ -1,5 +1,7 @@
-package com.graduatioinProject.sensorMonitoring.formerData.voltage;
+package com.graduatioinProject.sensorMonitoring.formerData.voltage.service;
 
+import com.graduatioinProject.sensorMonitoring.formerData.voltage.entity.Voltage;
+import com.graduatioinProject.sensorMonitoring.formerData.voltage.repository.VoltageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

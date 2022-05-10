@@ -1,5 +1,6 @@
-package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent;
+package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent.repository;
 
+import com.graduatioinProject.sensorMonitoring.formerData.electricCurrent.entity.ElectricCurrent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
