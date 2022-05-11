@@ -6,13 +6,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@NoArgsConstructor
 @Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class Temperature extends FormerData {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 }

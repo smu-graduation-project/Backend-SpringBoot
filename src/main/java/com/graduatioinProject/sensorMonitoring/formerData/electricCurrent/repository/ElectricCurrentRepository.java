@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ElectricCurrentRepository extends JpaRepository<ElectricCurrent, Long> {
-    List<ElectricCurrent> findAllByDateBetweenAndNodePort(LocalDate start, LocalDate end, Long nodePort);
+    List<ElectricCurrent> findAllByDateBetweenAndPort(LocalDate start, LocalDate end, Long port);
 }

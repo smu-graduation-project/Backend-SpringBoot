@@ -15,8 +15,8 @@ import java.util.List;
 public class ElectricCurrentService {
     private final ElectricCurrentRepository electricCurrentRepository;
 
-    public List<ElectricCurrent> findElectricCurrentList(LocalDate start, LocalDate end, Long nodePort) {
+    public List<ElectricCurrent> findElectricCurrentList(LocalDate start, LocalDate end, Long port) {
         // log.info("Get Electric Current List : " + LocalDateTime.now());
-        return electricCurrentRepository.findAllByDateBetweenAndNodePort(start, end, nodePort);
+        return electricCurrentRepository.findAllByDateBetweenAndPort(start, end, port);
     }
 }

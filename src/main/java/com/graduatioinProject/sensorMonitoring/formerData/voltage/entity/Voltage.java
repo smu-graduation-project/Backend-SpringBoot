@@ -1,17 +1,14 @@
 package com.graduatioinProject.sensorMonitoring.formerData.voltage.entity;
 
 import com.graduatioinProject.sensorMonitoring.formerData.FormerData;
+import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse;
 import lombok.*;
 
 import javax.persistence.*;
 
+@NoArgsConstructor
 @Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class Voltage extends FormerData {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 }

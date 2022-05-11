@@ -13,7 +13,7 @@ import java.util.List;
 public class VoltageService {
     private final VoltageRepository voltageRepository;
 
-    public List<Voltage> findVoltageList(LocalDate start, LocalDate end, Long nodePort) {
-        return voltageRepository.findAllByDateBetweenAndNodePort(start, end, nodePort);
+    public List<Voltage> findVoltageList(LocalDate start, LocalDate end, Long port) {
+        return voltageRepository.findAllByDateBetweenAndPort(start, end, port);
     }
 }

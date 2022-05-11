@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface TemperatureRepository extends JpaRepository<Temperature, Long> {
-    List<Temperature> findAllByDateBetweenAndNodePort(LocalDate start, LocalDate end, Long nodePort);
+    List<Temperature> findAllByDateBetweenAndPort(LocalDate start, LocalDate end, Long port);
 }

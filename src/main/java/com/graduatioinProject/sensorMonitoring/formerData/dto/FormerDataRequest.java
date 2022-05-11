@@ -19,5 +19,5 @@ public class FormerDataRequest {
      */
     private LocalDate startDate;
     private LocalDate endDate;
-    private Long nodePort;
+    private Long port;
 }
