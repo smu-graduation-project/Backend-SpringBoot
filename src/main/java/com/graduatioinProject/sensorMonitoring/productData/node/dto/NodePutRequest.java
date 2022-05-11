@@ -32,7 +32,7 @@ public class NodePutRequest {
      * NodePutRequest to Node
      * @return
      */
-    public Node toNode() {
+    public Node toEntity() {
         Node node = Node.builder()
                 .port(this.port)
                 .name(this.name)

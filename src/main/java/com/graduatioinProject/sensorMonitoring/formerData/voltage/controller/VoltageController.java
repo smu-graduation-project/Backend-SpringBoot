@@ -9,6 +9,8 @@ import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse
 import com.graduatioinProject.sensorMonitoring.formerData.temperature.entity.Temperature;
 import com.graduatioinProject.sensorMonitoring.formerData.voltage.service.VoltageService;
 import com.graduatioinProject.sensorMonitoring.formerData.voltage.entity.Voltage;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(tags = "04. 이전 데이터(전압)")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/formerData/voltage")
@@ -28,6 +31,7 @@ public class VoltageController {
     private final VoltageService voltageService;
     private final ResponseService responseService;
 
+    @ApiOperation(value = "전압 이전 데이터 목록", notes = "날짜와 port를 받아 전압 이전 데이러 목록을 반환")
     @GetMapping("/list")
     public CommonResult getVoltageList(FormerDataRequest request) {
         LocalDate startDate = LocalDate.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE);

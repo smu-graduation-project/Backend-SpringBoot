@@ -8,6 +8,8 @@ import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataRequest;
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse;
 import com.graduatioinProject.sensorMonitoring.formerData.temperature.service.TemperatureService;
 import com.graduatioinProject.sensorMonitoring.formerData.temperature.entity.Temperature;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(tags = "05. 이전 데이터(온도)")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/formerData/temperature")
@@ -25,6 +28,7 @@ public class TemperatureController {
     private final TemperatureService temperatureService;
     private final ResponseService responseService;
 
+    @ApiOperation(value = "온도 이전 데이터 목록", notes = "날짜와 port를 받아 온도 이전 데이러 목록을 반환")
     @GetMapping("/list")
     public CommonResult getTemperatureList(FormerDataRequest request) {
         /**

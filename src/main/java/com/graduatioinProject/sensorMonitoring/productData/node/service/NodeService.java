@@ -12,8 +12,8 @@ import java.util.Optional;
 public class NodeService {
     private final NodeRepository nodeDetailRepository;
 
-    public Optional<Node> getNode(Long id) {
-        return nodeDetailRepository.findById(id);
+    public Optional<Node> getNode(Long node) {
+        return nodeDetailRepository.findByNode(node);
     }
 
     public Long setNode(Node node) {
