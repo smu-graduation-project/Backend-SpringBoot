@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.formerData.voltage.controller;
 
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
@@ -26,13 +27,16 @@ public class VoltageController {
     private final ResponseService responseService;
 
     @GetMapping("/list")
-    public ListResult<FormerDataResponse> getVoltageList(@RequestBody FormerDataRequest request) {
+    public CommonResult getVoltageList(@RequestBody FormerDataRequest request) {
 
         List<Voltage> voltageList = voltageService.findVoltageList(request.getStartDate(), request.getEndDate(), request.getPort());
 
         List<FormerDataResponse> result = new ArrayList<>();
         voltageList.stream().forEach(i -> result.add(i.toResponse()));
 
+        if(result.isEmpty()) {
+            return responseService.failResult("해당 날짜에 데이터가 존재하지 않습니다.");
+        }
         try {
             return responseService.listResult(result);
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent.controller;
 
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
@@ -27,13 +28,16 @@ public class ElectricCurrentController {
     private final ResponseService responseService;
 
     @GetMapping("/list")
-    public ListResult<FormerDataResponse> getElectricCurrentList(@RequestBody FormerDataRequest request) {
+    public CommonResult getElectricCurrentList(@RequestBody FormerDataRequest request) {
         List<ElectricCurrent> electricCurrentList = electricCurrentService
                 .findElectricCurrentList(request.getStartDate(), request.getEndDate(), request.getPort());
 
         List<FormerDataResponse> result = new ArrayList<>();
         electricCurrentList.stream().forEach(i -> result.add(i.toResponse()));
 
+        if(result.isEmpty()) {
+            return responseService.failResult("해당 날짜에 데이터가 존재하지 않습니다.");
+        }
         try {
             return  responseService.listResult(result);
         } catch (Exception e) {
