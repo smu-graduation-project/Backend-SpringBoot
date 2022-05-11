@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface VoltageRepository extends JpaRepository<Voltage, Long> {
-    List<Voltage> findAllByDateBetweenAndNodePort(LocalDate start, LocalDate end, Long nodePort);
+    List<Voltage> findAllByDateBetweenAndPort(LocalDate start, LocalDate end, Long port);
 }

@@ -12,8 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TemperatureService {
     private final TemperatureRepository temperatureDataRepository;
-
-    public List<Temperature> findTemperatureList(LocalDate start, LocalDate end, Long nodePort) {
-        return temperatureDataRepository.findAllByDateBetweenAndNodePort(start, end, nodePort);
+    public List<Temperature> findTemperatureList(LocalDate start, LocalDate end, Long port) {
+        return temperatureDataRepository.findAllByDateBetweenAndPort(start, end, port);
     }
 }
