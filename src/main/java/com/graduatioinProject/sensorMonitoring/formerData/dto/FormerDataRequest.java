@@ -17,7 +17,7 @@ public class FormerDataRequest {
     /**
      * +a : 로그인 관련 정보
      */
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private Long port;
 }
