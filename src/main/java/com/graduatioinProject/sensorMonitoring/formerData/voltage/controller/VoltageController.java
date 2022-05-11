@@ -43,7 +43,7 @@ public class VoltageController {
             return responseService.failResult("해당 데이터가 존재하지 않습니다.");
         }
 
-        try {
+ㅁㅂㅂ        try {
             return responseService.listResult(result);
         } catch (Exception e) {
             e.printStackTrace();
