@@ -1,6 +1,7 @@
 package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent.controller;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataRequest;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Api(tags = "04. 이전 데이터(전류)")
+@Api(tags = "03. 이전 데이터(전류)")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/formerData/electricCurrent")
@@ -28,15 +29,9 @@ public class ElectricCurrentController {
 
     @GetMapping("/list/{port}")
     @ApiOperation(value = "전류 이전 데이터 목록", notes = "날짜와 port를 받아 전류 이전 데이러 목록을 반환")
-    public CommonResult getElectricCurrentList(@PathVariable Long port, FormerDataRequest request) {
+    public ListResult<FormerDataResponse> getElectricCurrentList(@PathVariable Long port, FormerDataRequest request) {
 
         List<FormerDataResponse> result = electricCurrentService.findElectricCurrentList(request.getStartDate(), request.getEndDate(), port);
-
-        try {
-            return  responseService.listResult(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BussinessException(e.getMessage());
-        }
+        return  responseService.listResult(result);
     }
 }
