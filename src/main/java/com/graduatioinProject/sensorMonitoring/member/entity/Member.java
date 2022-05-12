@@ -24,6 +24,15 @@ public class Member {
 	@Column(nullable = false)
 	private String password;
 
+	@Column(unique = true, nullable = false)
+	private String employeeNumber;
+
+	@Column(nullable = false)
+	private String phoneNumber;
+
+	@Column(nullable = false)
+	private String name;
+
 	@Column
 	private String signupType;
 
@@ -41,6 +50,9 @@ public class Member {
 		return MemberRes.builder()
 				.userSeq(seq)
 				.userId(userId)
+				.employeeNumber(employeeNumber)
+				.phoneNumber(phoneNumber)
+				.name(name)
 				.signupType(signupType)
 				.registDate(registDate)
 				.updateDate(updateDate)

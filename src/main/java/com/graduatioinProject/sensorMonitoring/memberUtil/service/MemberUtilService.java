@@ -6,6 +6,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
 import com.graduatioinProject.sensorMonitoring.memberUtil.dto.MemberSessionDto;
+import com.graduatioinProject.sensorMonitoring.memberUtil.dto.MemberSignupReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,11 @@ public class MemberUtilService {
 	private final HttpSession session;
 
 	@Transactional
-	public void signUp(String userId, String password1, String password2) {
+	public void signUp(MemberSignupReq memberSignupReq) {
+		String userId = memberSignupReq.getUserId();
+		String password1 = memberSignupReq.getPassword1();
+		String password2 = memberSignupReq.getPassword2();
+
 		if (memberRepository.findByUserId(userId).isPresent()) {
 			throw new BussinessException(ExMessage.MEMBER_ERROR_DUPLICATE);
 		}
@@ -35,15 +40,7 @@ public class MemberUtilService {
 			throw new BussinessException(ExMessage.MEMBER_ERROR_DUPLICATE);
 		} else {
 			try {
-				Member member = Member.builder()
-						.userId(userId)
-						.password(passwordEncoder.encode(password1))
-						.signupType("E")
-						.registDate(new DateConfig().getNowDate())
-						.updateDate(new DateConfig().getNowDate())
-						.activateYn("Y")
-						.build();
-				memberRepository.save(member);
+				memberRepository.save(memberSignupReq.toEntity(passwordEncoder.encode(memberSignupReq.getPassword1())));
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new BussinessException("회원가입에 실패하였습니다.");
