@@ -2,6 +2,7 @@ package com.graduatioinProject.sensorMonitoring.memberUtil.controller;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
+import com.graduatioinProject.sensorMonitoring.memberUtil.dto.MemberSignupReq;
 import com.graduatioinProject.sensorMonitoring.memberUtil.service.MemberUtilService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,12 +24,10 @@ public class MemberUtilController {
 	@PostMapping("/signUp")
 	@ApiOperation(value = "회원가입", notes = "아이디, 비밀번호를 이용하여 회원가입")
 	public CommonResult memberSignUp(
-			@ApiParam(value = "회원 아이디", required = true) @RequestParam(name = "userId") String name,
-			@ApiParam(value = "회원 패스워드1", required = true) @RequestParam(name = "password1") String password1,
-			@ApiParam(value = "회원 패스워드2", required = true) @RequestParam(name = "password2") String password2
+			@ApiParam(required = true) @RequestBody MemberSignupReq memberSignupReq
 	) {
 		try {
-			memberUtilService.signUp(name, password1, password2);
+			memberUtilService.signUp(memberSignupReq);
 			return responseService.successResult();
 		} catch (Exception e) {
 			return responseService.failResult(
