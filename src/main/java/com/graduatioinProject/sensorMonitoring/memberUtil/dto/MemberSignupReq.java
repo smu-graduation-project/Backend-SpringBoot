@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.member.dto;
+package com.graduatioinProject.sensorMonitoring.memberUtil.dto;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.DateConfig;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
@@ -8,17 +8,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Column;
-
 @Data
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class MemberReq {
+public class MemberSignupReq {
 	@ApiModelProperty(required = true)
 	private String userId;
 	@ApiModelProperty(required = true)
-	private String password;
+	private String password1;
+	@ApiModelProperty(required = true)
+	private String password2;
 	@ApiModelProperty(required = true)
 	private String employeeNumber;
 	@ApiModelProperty(required = true)
