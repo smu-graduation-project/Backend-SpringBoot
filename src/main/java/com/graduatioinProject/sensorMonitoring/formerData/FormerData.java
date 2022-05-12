@@ -2,6 +2,7 @@ package com.graduatioinProject.sensorMonitoring.formerData;;
 
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse;
 import lombok.Data;
+import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -16,7 +17,7 @@ public abstract class FormerData {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
+    // @ForeignKey()
     private Long port;
 
     private double max;

@@ -1,7 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.formerData.voltage.entity;
 
 import com.graduatioinProject.sensorMonitoring.formerData.FormerData;
-import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse;
 import lombok.*;
 
 import javax.persistence.*;
