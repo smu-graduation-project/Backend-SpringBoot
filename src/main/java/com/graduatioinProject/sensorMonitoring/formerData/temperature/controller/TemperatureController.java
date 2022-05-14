@@ -14,11 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Api(tags = "05. 이전 데이터(온도)")
+@CrossOrigin
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -30,32 +29,12 @@ public class TemperatureController {
 
     @GetMapping("/list/{port}")
     @ApiOperation(value = "온도 이전 데이터 목록", notes = "날짜와 port를 받아 온도 이전 데이러 목록을 반환")
-    public CommonResult getTemperatureList(@PathVariable Long port,
-                                           HttpServletRequest httpServletRequest,
-                                           FormerDataRequest request) {
-        HttpSession session = httpServletRequest.getSession(false);
-
-        // Session 확인
-        if (session == null) {
-            return responseService.failResult(ExMessage.SESSION_ERROR_NOT_EXIST.getMessage());
-        }
-        MemberSessionDto loginMember = (MemberSessionDto) session.getAttribute("member");
-
-        // 세션에 해당 회원의 데이터가 있는지
-        if (loginMember == null) {
-            return responseService.failResult(ExMessage.SESSION_ERROR_MEMBER_NOT_FOUND.getMessage());
-        }
-
-        /**
-         * 요청한 유저가 해당 NodePort에 접근권한이 있는지 확인 해야함.
-         * memberDto에 id값이 있으면, 이를 기반으로 권한을 파악할 수 있을 듯.
-         *
-         * User - realtionship - Site 를 구성하고,
-         * 해당 nodePort가 속한 Site와 비교하여 찾으면 될 듯.
-         */
+    public CommonResult getTemperatureList(@PathVariable Long port, FormerDataRequest request) {
 
         List<FormerDataResponse> result = temperatureService.findTemperatureList(request.getStartDate(), request.getEndDate(), port);
-
+        if(result.isEmpty()) {
+            return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
+        }
         return responseService.listResult(result);
     }
 }
