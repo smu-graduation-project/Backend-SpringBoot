@@ -37,13 +37,13 @@ public class TemperatureController {
 
         // Session 확인
         if (session == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_SESSION_NOT_EXIST.getMessage());
+            return responseService.failResult(ExMessage.SESSION_ERROR_NOT_EXIST.getMessage());
         }
         MemberSessionDto loginMember = (MemberSessionDto) session.getAttribute("member");
 
         // 세션에 해당 회원의 데이터가 있는지
         if (loginMember == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_MEMBER_NOT_FOUND.getMessage());
+            return responseService.failResult(ExMessage.SESSION_ERROR_MEMBER_NOT_FOUND.getMessage());
         }
 
         /**

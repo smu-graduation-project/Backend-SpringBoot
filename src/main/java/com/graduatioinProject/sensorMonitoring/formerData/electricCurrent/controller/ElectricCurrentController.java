@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Api(tags = "03. 이전 데이터(전류)")
 @RestController
@@ -38,16 +41,16 @@ public class ElectricCurrentController {
         HttpSession session = httpServletRequest.getSession(false);
 
         if (session == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_SESSION_NOT_EXIST.getMessage());
+            return responseService.failResult(ExMessage.SESSION_ERROR_NOT_EXIST.getMessage());
         }
         MemberSessionDto loginMember = (MemberSessionDto) session.getAttribute("member");
 
         // 세션에 해당 회원의 데이터가 있는지
         if (loginMember == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_MEMBER_NOT_FOUND.getMessage());
+            return responseService.failResult(ExMessage.SESSION_ERROR_MEMBER_NOT_FOUND.getMessage());
         }
 
         List<FormerDataResponse> result = electricCurrentService.findElectricCurrentList(request.getStartDate(), request.getEndDate(), port);
-        return  responseService.listResult(result);
+        return responseService.listResult(result);
     }
 }
