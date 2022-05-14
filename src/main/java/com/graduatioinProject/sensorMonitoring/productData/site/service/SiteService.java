@@ -28,7 +28,7 @@ public class SiteService {
 
     public SiteResponse getSite(Long id) {
         return siteRepository.findById(id)
-                .orElseThrow(() -> new BussinessException(ExMessage.DATA_ERROR_NOT_FOUND.getMessage()))
+                .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()))
                 .toResponse();
     }
 }

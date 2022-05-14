@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,5 +35,5 @@ public class Battery {
     private Site site;
 
     @OneToMany(targetEntity = Node.class)
-    private List<Node> nodes;
+    private Set<Node> nodes;
 }

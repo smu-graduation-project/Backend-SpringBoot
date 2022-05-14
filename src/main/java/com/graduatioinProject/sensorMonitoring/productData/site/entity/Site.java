@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @Author : Jeeseob
@@ -33,7 +33,7 @@ public class Site {
     private double gpsYPos;
 
     @OneToMany(targetEntity = Battery.class)
-    private List<Battery> batteries;
+    private Set<Battery> batteries;
 
     public SiteResponse toResponse() {
         SiteResponse response = SiteResponse
