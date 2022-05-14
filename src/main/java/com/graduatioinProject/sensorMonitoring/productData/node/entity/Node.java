@@ -23,7 +23,7 @@ public class Node {
     private String type;
     private String information;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Battery.class)
     private Battery battery;
 
     /**

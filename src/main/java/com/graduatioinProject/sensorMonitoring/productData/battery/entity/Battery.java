@@ -8,12 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @Author : Jeeseob
  * @CreateAt : 2022/05/10
  */
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -30,6 +32,9 @@ public class Battery {
 
     private String imageUrl;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Site.class)
     private Site site;
+
+    @OneToMany(targetEntity = Node.class)
+    private List<Node> nodes;
 }
