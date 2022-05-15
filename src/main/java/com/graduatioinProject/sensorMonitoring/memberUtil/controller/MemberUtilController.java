@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Api(tags = "02. 회원가입")
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/api")
