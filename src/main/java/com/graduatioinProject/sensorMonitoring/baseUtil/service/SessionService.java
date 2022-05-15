@@ -17,15 +17,10 @@ import javax.servlet.http.HttpSession;
 public class SessionService {
     public MemberSessionDto checkMemberSession(HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession();
-
-        if (session == null) {
-            throw (new BussinessException(ExMessage.DATA_ERROR_SESSION_NOT_EXIST.getMessage()));
-        }
-
         MemberSessionDto loginMember = (MemberSessionDto) session.getAttribute("member");
 
         if (loginMember == null) {
-            throw (new BussinessException(ExMessage.DATA_ERROR_MEMBER_NOT_FOUND.getMessage()));
+            throw (new BussinessException(ExMessage.SESSION_ERROR_MEMBER_NOT_FOUND.getMessage()));
         }
 
         return loginMember;

@@ -14,10 +14,8 @@ public enum ExMessage {
 	, SITE_ERROR_NOT_FOUND("해당 SITE를 찾을 수 없습니다.")
 	, BATTERY_ERROR_NOT_FOUND("해당 BATTERY를 찾을 수 없습니다.")
 	, NODE_ERROR_NOT_FOUND("해당 NODE를 찾을 수 없습니다.")
-	, DATA_ERROR_SESSION_NOT_EXIST("세션 데이터를 확인할 수 없습니다.")
-	, DATA_ERROR_MEMBER_NOT_FOUND("해당 세션의 회원을 찾을 수 없습니다.")
+	, SESSION_ERROR_MEMBER_NOT_FOUND("로그인 정보를 찾을 수 없습니다.")
 	;
-
 
 	private final String message;
 }
