@@ -1,7 +1,6 @@
-package com.graduatioinProject.sensorMonitoring.formerData.temperature.entity;
+package com.graduatioinProject.sensorMonitoring.formerData.entity;
 
 
-import com.graduatioinProject.sensorMonitoring.formerData.FormerData;
 import lombok.*;
 
 import javax.persistence.*;

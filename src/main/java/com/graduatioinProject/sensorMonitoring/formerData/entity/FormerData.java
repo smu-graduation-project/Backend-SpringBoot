@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.formerData;;
+package com.graduatioinProject.sensorMonitoring.formerData.entity;;
 
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse;
 import lombok.Data;
