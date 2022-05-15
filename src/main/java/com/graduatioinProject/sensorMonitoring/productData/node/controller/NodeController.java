@@ -10,14 +10,13 @@ import com.graduatioinProject.sensorMonitoring.memberUtil.dto.MemberSessionDto;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.service.NodeService;
-import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodePutRequest;
+import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeUpdateRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Api(tags = "08. 노드 상세정보")
 @RequestMapping("api/product/node")
@@ -51,7 +50,7 @@ public class NodeController {
     }
 
     @ApiOperation(value = "노드 추가", notes = "노드 관련 정보를 받아 노드를 추가(프론트에서 처리 X)")
-    @PutMapping("/add/{port}")
+    @PostMapping("/add/{port}")
     public CommonResult setNodeDetail(@PathVariable Long port){
         /**
          * 노드 정보는 자동으로 추가되도록 하고,
@@ -59,8 +58,8 @@ public class NodeController {
          * 그렇게 하려면, 특정 IP만 가능하도록 설정하거나, 따로 암호화된 키를 가져야 할 것 같음.
          */
         try {
-            nodeService.setNode(Node.builder().port(port).build());
-            return  responseService.successResult();
+            Long id = nodeService.setNode(Node.builder().port(port).build());
+            return responseService.singleResult(String.valueOf(id));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,13 +69,14 @@ public class NodeController {
 
     @ApiOperation(value = "노드 수정", notes = "노드 관련 정보를 받아 노드정보를 수정합니다.")
     @PutMapping("/update/{id}")
-    public CommonResult setNodeDetail(@RequestBody NodePutRequest request,
+    public CommonResult setNodeDetail(@RequestBody NodeUpdateRequest request,
                                       HttpServletRequest httpServletRequest,
                                       @PathVariable Long id) {
 
         MemberSessionDto loginMember = sessionService.checkMemberSession(httpServletRequest);
         /**
-         * 권한이 관리자인지 확인하기
+         * 권헌 확인
+         * + 해당하는 id의 배터리가 있는지
          */
 
         if(!nodeService.checkNode(id)) {

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 
 /**
@@ -17,13 +16,12 @@ import org.springframework.lang.Nullable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NodePutRequest {
-    private Long port;
+public class NodeUpdateRequest {
     private String name;
     private String type;
     private String information;
 
-    private Battery battery;
+    private Battery batteryId;
 
     /**
      * NodePutRequest to Node
@@ -31,11 +29,10 @@ public class NodePutRequest {
      */
     public Node toEntity() {
         Node node = Node.builder()
-                .port(this.port)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                .battery(this.battery)
+                .battery(this.batteryId)
                 .build();
 
         return node;
