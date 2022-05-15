@@ -1,9 +1,10 @@
 package com.graduatioinProject.sensorMonitoring.formerData.temperature.controller;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 
+import com.graduatioinProject.sensorMonitoring.baseUtil.service.SessionService;
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataRequest;
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse;
 import com.graduatioinProject.sensorMonitoring.formerData.temperature.service.TemperatureService;
@@ -15,17 +16,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Api(tags = "05. 이전 데이터(온도)")
 @Slf4j
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/formerData/temperature")
 public class TemperatureController {
 
     private final TemperatureService temperatureService;
+    private final SessionService sessionService;
     private final ResponseService responseService;
 
     @GetMapping("/list/{port}")
@@ -33,18 +35,7 @@ public class TemperatureController {
     public CommonResult getTemperatureList(@PathVariable Long port,
                                            HttpServletRequest httpServletRequest,
                                            FormerDataRequest request) {
-        HttpSession session = httpServletRequest.getSession(false);
-
-        // Session 확인
-        if (session == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_SESSION_NOT_EXIST.getMessage());
-        }
-        MemberSessionDto loginMember = (MemberSessionDto) session.getAttribute("member");
-
-        // 세션에 해당 회원의 데이터가 있는지
-        if (loginMember == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_MEMBER_NOT_FOUND.getMessage());
-        }
+        MemberSessionDto loginMember = sessionService.checkMemberSession(httpServletRequest);
 
         /**
          * 요청한 유저가 해당 NodePort에 접근권한이 있는지 확인 해야함.
@@ -54,8 +45,13 @@ public class TemperatureController {
          * 해당 nodePort가 속한 Site와 비교하여 찾으면 될 듯.
          */
 
-        List<FormerDataResponse> result = temperatureService.findTemperatureList(request.getStartDate(), request.getEndDate(), port);
+        try {
+            List<FormerDataResponse> result = temperatureService.findTemperatureList(request.getStartDate(), request.getEndDate(), port);
+            return responseService.listResult(result);
 
-        return responseService.listResult(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BussinessException(e.getMessage());
+        }
     }
 }

@@ -1,8 +1,9 @@
 package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent.controller;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
+import com.graduatioinProject.sensorMonitoring.baseUtil.service.SessionService;
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataRequest;
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataResponse;
 import com.graduatioinProject.sensorMonitoring.formerData.electricCurrent.service.ElectricCurrentService;
@@ -11,22 +12,20 @@ import com.graduatioinProject.sensorMonitoring.memberUtil.dto.MemberSessionDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Api(tags = "03. 이전 데이터(전류)")
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/formerData/electricCurrent")
 public class ElectricCurrentController {
 
     private final ElectricCurrentService electricCurrentService;
+    private final SessionService sessionService;
     private final ResponseService responseService;
 
     @GetMapping("/list/{port}")
@@ -35,19 +34,14 @@ public class ElectricCurrentController {
                                                HttpServletRequest httpServletRequest,
                                                FormerDataRequest request) {
 
-        HttpSession session = httpServletRequest.getSession(false);
+        MemberSessionDto loginMember = sessionService.checkMemberSession(httpServletRequest);
 
-        if (session == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_SESSION_NOT_EXIST.getMessage());
+        try {
+            List<FormerDataResponse> result = electricCurrentService.findElectricCurrentList(request.getStartDate(), request.getEndDate(), port);
+            return  responseService.listResult(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BussinessException(e.getMessage());
         }
-        MemberSessionDto loginMember = (MemberSessionDto) session.getAttribute("member");
-
-        // 세션에 해당 회원의 데이터가 있는지
-        if (loginMember == null) {
-            return responseService.failResult(ExMessage.DATA_ERROR_MEMBER_NOT_FOUND.getMessage());
-        }
-
-        List<FormerDataResponse> result = electricCurrentService.findElectricCurrentList(request.getStartDate(), request.getEndDate(), port);
-        return  responseService.listResult(result);
     }
 }

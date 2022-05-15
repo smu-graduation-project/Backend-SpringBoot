@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class SiteService {
     private final SiteRepository siteRepository;
-    private final ResponseService responseService;
 
     public Site setSite(Site site) {
         return siteRepository.save(site);
