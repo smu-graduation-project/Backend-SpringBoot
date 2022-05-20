@@ -5,7 +5,6 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessExcep
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 
-import com.graduatioinProject.sensorMonitoring.baseUtil.service.SessionService;
 import com.graduatioinProject.sensorMonitoring.memberUtil.dto.MemberSessionDto;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
@@ -25,20 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 public class NodeController {
 
     private final NodeService nodeService;
-    private final SessionService sessionService;
     private final ResponseService responseService;
 
     @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
     @GetMapping("/detail/{id}")
-    public CommonResult getNodeDetail(@PathVariable Long id,
-                                      HttpServletRequest httpServletRequest) {
-
-        MemberSessionDto loginMember = sessionService.checkMemberSession(httpServletRequest);
-
-        /**
-         * Long userCode = Long.valueOf((String) body.get("userCode"));
-         * 요청한 유저가 해당 NodePort에 접근권한이 있는지 확인 해야함.
-         */
+    public CommonResult getNodeDetail( HttpServletRequest httpServletRequest,
+                                       @PathVariable Long id) {
 
         NodeResponse response = nodeService.getNodeResponse(id);
         try {
@@ -69,11 +60,10 @@ public class NodeController {
 
     @ApiOperation(value = "노드 수정", notes = "노드 관련 정보를 받아 노드정보를 수정합니다.")
     @PutMapping("/update/{id}")
-    public CommonResult setNodeDetail(@RequestBody NodeUpdateRequest request,
-                                      HttpServletRequest httpServletRequest,
-                                      @PathVariable Long id) {
+    public CommonResult setNodeDetail( HttpServletRequest httpServletRequest,
+                                       @RequestBody NodeUpdateRequest request,
+                                       @PathVariable Long id) {
 
-        MemberSessionDto loginMember = sessionService.checkMemberSession(httpServletRequest);
         /**
          * 권헌 확인
          * + 해당하는 id의 배터리가 있는지

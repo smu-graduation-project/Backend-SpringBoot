@@ -37,8 +37,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	// H2 DB 설정
-	implementation 'com.h2database:h2'
+	// AOP
+	compileOnly 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('test') {
