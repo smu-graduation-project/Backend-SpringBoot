@@ -1,6 +1,8 @@
 package com.graduatioinProject.sensorMonitoring.formerData.temperature.controller;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 
@@ -29,11 +31,11 @@ public class TemperatureController {
 
     @GetMapping("/list/{port}")
     @ApiOperation(value = "온도 이전 데이터 목록", notes = "날짜와 port를 받아 온도 이전 데이러 목록을 반환")
-    public CommonResult getTemperatureList(@PathVariable Long port, FormerDataRequest request) {
+    public ListResult<FormerDataResponse> getTemperatureList(@PathVariable Long port, FormerDataRequest request) {
 
         List<FormerDataResponse> result = temperatureService.findTemperatureList(request.getStartDate(), request.getEndDate(), port);
         if(result.isEmpty()) {
-            return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
+            throw new BussinessException(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }
         return responseService.listResult(result);
     }

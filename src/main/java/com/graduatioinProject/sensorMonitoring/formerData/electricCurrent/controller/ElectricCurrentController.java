@@ -1,6 +1,8 @@
 package com.graduatioinProject.sensorMonitoring.formerData.electricCurrent.controller;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.formerData.dto.FormerDataRequest;
@@ -26,11 +28,11 @@ public class ElectricCurrentController {
 
     @GetMapping("/list/{port}")
     @ApiOperation(value = "전류 이전 데이터 목록", notes = "날짜와 port를 받아 전류 이전 데이러 목록을 반환")
-    public CommonResult getElectricCurrentList(@PathVariable Long port, FormerDataRequest request) {
+    public ListResult<FormerDataResponse> getElectricCurrentList(@PathVariable Long port, FormerDataRequest request) {
 
         List<FormerDataResponse> result = electricCurrentService.findElectricCurrentList(request.getStartDate(), request.getEndDate(), port);
         if(result.isEmpty()) {
-            return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
+            throw new BussinessException(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }
         return responseService.listResult(result);
     }
