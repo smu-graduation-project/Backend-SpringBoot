@@ -27,6 +27,7 @@ public abstract class FormerData {
     public FormerDataResponse toResponse() {
         FormerDataResponse response = FormerDataResponse
                 .builder()
+                .id(this.id)
                 .date(this.getDate())
                 .max(this.getMax())
                 .min(this.getMin())

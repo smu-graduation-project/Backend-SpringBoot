@@ -16,9 +16,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class FormerDataResponse {
+    private Long id;
     private LocalDate date;
     private double max;
     private double min;
     private double average;
-
 }
