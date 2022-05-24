@@ -23,6 +23,7 @@ public class AopConfig {
     @Before("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.annotation.LoginCheck)")
     private void loginCheck(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
+        // HttpServletRequest를 1번째 argument로 받아야 원활하게 동작
         HttpServletRequest httpServletRequest = (HttpServletRequest) args[0];
 
         HttpSession session = httpServletRequest.getSession();

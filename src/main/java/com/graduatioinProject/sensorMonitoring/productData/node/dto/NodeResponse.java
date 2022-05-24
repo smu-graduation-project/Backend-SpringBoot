@@ -23,5 +23,4 @@ public class NodeResponse {
     private String type;
 
     private String information;
-    private Battery battery;
 }

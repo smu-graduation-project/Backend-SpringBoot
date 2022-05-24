@@ -18,7 +18,8 @@ public class SiteRequest {
     private double gpsYPos;
 
     public Site toEntity() {
-        Site entity = Site
+
+        return Site
                 .builder()
                 .name(this.name)
                 .type(this.type)
@@ -26,7 +27,5 @@ public class SiteRequest {
                 .gpsXPos(this.gpsXPos)
                 .gpsYPos(this.gpsYPos)
                 .build();
-
-        return entity;
     }
 }

@@ -1,6 +1,7 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.entity;
 
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -37,7 +38,8 @@ public class Site {
     private Set<Battery> batteries;
 
     public SiteResponse toResponse() {
-        SiteResponse response = SiteResponse
+
+        return SiteResponse
                 .builder()
                 .name(this.name)
                 .type(this.type)
@@ -45,7 +47,15 @@ public class Site {
                 .gpsXPos(this.gpsXPos)
                 .gpsYPos(this.gpsYPos)
                 .build();
+    }
 
-        return response;
+    public SitePagingResponse toPagingResponse() {
+
+        return SitePagingResponse
+                .builder()
+                .name(this.name)
+                .gpsXPos(this.gpsXPos)
+                .gpsYPos(this.gpsYPos)
+                .build();
     }
 }

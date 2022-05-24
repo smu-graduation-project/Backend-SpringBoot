@@ -21,20 +21,14 @@ public class NodeUpdateRequest {
     private String type;
     private String information;
 
-    private Battery batteryId;
+    private Long batteryId;
 
-    /**
-     * NodePutRequest to Node
-     * @return
-     */
     public Node toEntity() {
-        Node node = Node.builder()
+
+        return Node.builder()
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                .battery(this.batteryId)
                 .build();
-
-        return node;
     }
 }

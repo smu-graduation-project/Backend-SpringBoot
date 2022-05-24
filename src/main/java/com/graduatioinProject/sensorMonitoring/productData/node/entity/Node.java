@@ -28,15 +28,13 @@ public class Node {
     private Battery battery;
 
     public NodeResponse toResponse() {
-        NodeResponse response = NodeResponse.builder()
+
+        return NodeResponse.builder()
                 .port(this.port)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                .battery(this.battery)
                 .build();
-
-        return response;
     }
 
 }
