@@ -3,6 +3,8 @@ package com.graduatioinProject.sensorMonitoring.baseUtil.config;
 import com.graduatioinProject.sensorMonitoring.baseUtil.Filter.MyFilterBeforeSecurityFilter;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtAuthenticationFilter;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtAuthorizationFilter;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.exceptionHandleClass.CustomAccessDeniedHandler;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.exceptionHandleClass.CustomAuthenticationEntryPoint;
 import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private String SECRET_KEY;
 	private final MemberRepository memberRepository;
 	private final CorsFilter corsFilter;
+	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -53,7 +57,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				// ADMIN 관련 요청은 ADMIN 권한 유저만 가능
 				.antMatchers("/v1/api/admin/**")
 				.access("hasRole('ROLE_ADMIN')")
-				.anyRequest() // 그 외 모든 요청에 대해서 허용하라.
-				.permitAll();
+				.anyRequest().permitAll() // 그 외 모든 요청에 대해서 허용하라.
+
+				.and()
+				.exceptionHandling()
+				.authenticationEntryPoint(customAuthenticationEntryPoint)
+				.accessDeniedHandler(customAccessDeniedHandler);
 	}
 }

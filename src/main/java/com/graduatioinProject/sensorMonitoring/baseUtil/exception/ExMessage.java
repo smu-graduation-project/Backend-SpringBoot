@@ -12,6 +12,7 @@ public enum ExMessage {
 	, MEMBER_ERROR_USER_ID_FORMAT("아이디 형식을 맞춰주세요.")
 	, MEMBER_ERROR_PASSWORD("패스워드가 일치하지 않습니다.")
 	, JWT_ERROR_FORMAT("JWT 토큰이 잘못되었습니다.")
+	, JWT_ACCESS_DENIED("접근이 거부되었습니다.")
 	;
 
 	private final String message;
