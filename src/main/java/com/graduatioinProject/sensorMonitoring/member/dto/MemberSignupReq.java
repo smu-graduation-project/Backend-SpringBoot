@@ -8,32 +8,33 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Column;
-
 @Data
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class MemberReq {
+public class MemberSignupReq {
 	@ApiModelProperty(required = true)
-	private String userId;
+	private String username;
 	@ApiModelProperty(required = true)
 	private String password;
+	@ApiModelProperty(required = true)
+	private String password2;
 	@ApiModelProperty(required = true)
 	private String employeeNumber;
 	@ApiModelProperty(required = true)
 	private String phoneNumber;
 	@ApiModelProperty(required = true)
-	private String name;
+	private String realname;
 
-	public Member toEntity(String encryptedPw) {
+	public Member toEntity(String encryptedPw, String role) {
 		return Member.builder()
-				.userId(userId)
+				.username(username)
 				.password(encryptedPw)
 				.employeeNumber(employeeNumber)
 				.phoneNumber(phoneNumber)
-				.name(name)
-				.registDate(new DateConfig().getNowDate())
+				.realname(realname)
+				.roles(role)
+				.createDate(new DateConfig().getNowDate())
 				.updateDate(new DateConfig().getNowDate())
 				.signupType("E")
 				.activateYn("Y")
