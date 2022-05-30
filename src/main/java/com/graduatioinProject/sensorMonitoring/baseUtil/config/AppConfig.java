@@ -1,0 +1,18 @@
+package com.graduatioinProject.sensorMonitoring.baseUtil.config;
+
+import com.graduatioinProject.sensorMonitoring.baseUtil.formatter.LocalDateFormatter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @Author : Jeeseob
+ * @CreateAt : 2022/05/12
+ */
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public LocalDateFormatter localDateFormatter() {
+        return new LocalDateFormatter();
+    }
+}

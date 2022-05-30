@@ -1,11 +1,10 @@
 package com.graduatioinProject.sensorMonitoring.baseUtil.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 public class SingleResult<T> extends CommonResult {
 	T data;
 }
