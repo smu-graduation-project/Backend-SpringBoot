@@ -26,7 +26,7 @@ public class PrincipalDetailService implements UserDetailsService {
 		log.info("PrincipalDetailService.loadUserByUsername");
 		log.info("LOGIN");
 		Member member = memberRepository.findByUsername(username)
-				.orElseThrow(() -> new BussinessException(ExMessage.MEMBER_ERROR_NOT_FOUND));
+				.orElseThrow(() -> new BussinessException(ExMessage.MEMBER_ERROR_NOT_FOUND_ENG));
 
 		return new PrincipalDetails(member);
 	}

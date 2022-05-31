@@ -3,6 +3,7 @@ package com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.auth.PrincipalDetails;
+import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
@@ -24,14 +25,11 @@ import java.io.IOException;
 // 권한이나 인증이 필요하지 않다면 거치지 않는다.
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+	private JwtService jwtService;
 
-	private MemberRepository memberRepository;
-	private String SECRET_KEY;
-
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, String SECRET_KEY) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
 		super(authenticationManager);
-		this.memberRepository = memberRepository;
-		this.SECRET_KEY = SECRET_KEY;
+		this.jwtService = jwtService;
 	}
 
 	// 인증이나 권한이 필요한 주소요청이 있을 때 해당 필터를 거친다.
@@ -40,46 +38,56 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		log.info("CHECK JWT : JwtAuthorizationFilter.doFilterInternal");
 
 		// 1. 권한이나 인증이 필요한 요청이 전달됨
-		String jwtHeader = request.getHeader(JwtProperties.HEADER_PREFIX);
-
 		// 2. Header 확인
-		if (jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
+		if (!jwtService.isValidHeader(request)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			chain.doFilter(request, response);
 			return;
 		}
 
 		// 3. JWT 토큰을 검증해서 정상적인 사용자인지, 권한이 맞는지 확인
-		String jwtToken = request
+		String accessJwtToken = request
 				.getHeader(JwtProperties.HEADER_PREFIX)
 				.replace(JwtProperties.TOKEN_PREFIX, "");
-		String username = null;
-		try {
-			username = JWT
-					.require(Algorithm.HMAC512(SECRET_KEY))
-					.build()
-					.verify(jwtToken)
-					.getClaim("username")
-					.asString();
-		} catch (Exception e) {
-			throw new BussinessException(ExMessage.JWT_ERROR_FORMAT + " : " + e.getMessage());
+		String refreshJwtToken = request
+				.getHeader(JwtProperties.REFRESH_HEADER_PREFIX)
+				.replace(JwtProperties.TOKEN_PREFIX, "");
+
+		// RefreshToken 만료 또는 유효하지 않은 경우 인증 안함
+		if (!jwtService.isValidToken(refreshJwtToken)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			chain.doFilter(request, response);
+			return;
 		}
 
-		if (username != null) {
-			// 4. 정상적인 서명이 검증되었으므로 username으로 회원을 조회한다.
-			// Athentication 생성을 위해 username으로 회원 조회 후 PricipalDetails 객체로 감싼다.
-			Member member = memberRepository.findByUsername(username)
-					.orElseThrow(() -> new BussinessException(ExMessage.MEMBER_ERROR_NOT_FOUND));
-			PrincipalDetails principalDetails = new PrincipalDetails(member);
+		Member memberByRefreshToken = jwtService.getMemberByRefreshToken(refreshJwtToken);
+		String username = memberByRefreshToken.getUsername();
+		Long id = memberByRefreshToken.getSeq();
 
-			// 5. jwt 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 만들어준다.
-			Authentication authentication =
-					new UsernamePasswordAuthenticationToken(
-							principalDetails, null, principalDetails.getAuthorities()
-					);
-
-			// 6. 강제로 시큐리티_세션에 접근하여 Authentication 객체를 저장해준다.
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+		// Access 유효 -> Access 토큰만 재발급
+		if (jwtService.isValidToken(accessJwtToken)) {
+			accessJwtToken = jwtService.createAccessToken(id, username);
+			response.addHeader(JwtProperties.HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + accessJwtToken);
 		}
+		// Access 만료 -> Access 토큰만 재발급
+		else if (jwtService.isExpiredToken(accessJwtToken)) {
+			accessJwtToken = jwtService.createAccessToken(id, username);
+			response.addHeader(JwtProperties.HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + accessJwtToken);
+		} else {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			chain.doFilter(request, response);
+			return;
+		}
+
+		// 4. 정상적인 서명이 검증되었으므로 조회 된 회원을 PricipalDetails 객체로 감싼다.
+		PrincipalDetails principalDetails = new PrincipalDetails(memberByRefreshToken);
+
+		// 5. jwt 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 만들어준다.
+		Authentication authentication = new UsernamePasswordAuthenticationToken(
+				principalDetails, null, principalDetails.getAuthorities());
+
+		// 6. 강제로 시큐리티_세션에 접근하여 Authentication 객체를 저장해준다.
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		chain.doFilter(request, response);
 	}
 }

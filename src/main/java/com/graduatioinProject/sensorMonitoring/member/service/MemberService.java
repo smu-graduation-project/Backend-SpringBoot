@@ -3,6 +3,7 @@ package com.graduatioinProject.sensorMonitoring.member.service;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
+import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
@@ -41,7 +42,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void signUp(MemberSignupReq memberSignupReq, String role) {
+	public void signUp(MemberSignupReq memberSignupReq, Role role) {
 		String username = memberSignupReq.getUsername();
 		String employeeNumber = memberSignupReq.getEmployeeNumber();
 		String password1 = memberSignupReq.getPassword();

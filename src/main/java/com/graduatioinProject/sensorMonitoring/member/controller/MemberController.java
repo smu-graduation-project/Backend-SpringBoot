@@ -6,6 +6,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.member.config.MemberProperties;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
+import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
 import io.swagger.annotations.Api;
@@ -19,7 +20,7 @@ import java.util.List;
 @Api(tags = "01. 회원")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/api/member")
+@RequestMapping("/api/v1/member")
 public class MemberController {
 
     private final ResponseService responseService;
@@ -32,7 +33,7 @@ public class MemberController {
             @ModelAttribute MemberSignupReq memberSignupReq
     ) {
         try {
-            memberService.signUp(memberSignupReq, MemberProperties.USER);
+            memberService.signUp(memberSignupReq, Role.USER);
             return responseService.successResult();
         } catch (Exception e) {
             return responseService.failResult(
@@ -48,7 +49,7 @@ public class MemberController {
             @ModelAttribute MemberSignupReq memberSignupReq
     ) {
         try {
-            memberService.signUp(memberSignupReq, MemberProperties.ADMIN);
+            memberService.signUp(memberSignupReq, Role.ADMIN);
             return responseService.successResult();
         } catch (Exception e) {
             return responseService.failResult(
@@ -71,36 +72,5 @@ public class MemberController {
     public ListResult<MemberRes> findAllMember() {
         List<MemberRes> allByName = memberService.findAll();
         return responseService.listResult(allByName);
-    }
-
-    @PostMapping("/signUp")
-    @ApiOperation(value = "회원가입", notes = "아이디, 비밀번호를 이용하여 USER 회원가입")
-    public CommonResult memberSignUp(
-            @ApiParam(required = true) @RequestBody MemberSignupReq memberSignupReq
-    ) {
-        try {
-            memberService.signUp(memberSignupReq, MemberProperties.USER);
-            return responseService.successResult();
-        } catch (Exception e) {
-            return responseService.failResult(
-                    e.getMessage()
-            );
-        }
-    }
-
-    @PostMapping("/signIn")
-    @ApiOperation(value = "로그인", notes = "이메일, 비밀번호를 이용하여 로그인")
-    public CommonResult memberSignIn(
-            @ApiParam(value = "회원 아이디", required = true) @RequestParam String userId,
-            @ApiParam(value = "회원 패스워드", required = true) @RequestParam String password
-    ) {
-        try {
-            memberService.signIn(userId, password);
-            return responseService.successResult();
-        } catch (Exception e) {
-            return responseService.failResult(
-                    e.getMessage()
-            );
-        }
     }
 }
