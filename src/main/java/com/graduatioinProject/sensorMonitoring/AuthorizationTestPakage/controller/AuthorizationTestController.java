@@ -1,18 +1,16 @@
 package com.graduatioinProject.sensorMonitoring.AuthorizationTestPakage.controller;
 
-import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "9999. 권한 테스트")
 @RestController
-@RequestMapping("/v1/api/authorizationTest")
+@RequestMapping("/api/v1/authorizationTest")
 @RequiredArgsConstructor
 public class AuthorizationTestController {
 

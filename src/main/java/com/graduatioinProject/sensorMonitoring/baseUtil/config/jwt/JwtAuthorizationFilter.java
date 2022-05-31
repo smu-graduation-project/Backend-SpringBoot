@@ -40,7 +40,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		// 1. 권한이나 인증이 필요한 요청이 전달됨
 		// 2. Header 확인
 		if (!jwtService.isValidHeader(request)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			chain.doFilter(request, response);
 			return;
 		}
@@ -55,7 +54,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		// RefreshToken 만료 또는 유효하지 않은 경우 인증 안함
 		if (!jwtService.isValidToken(refreshJwtToken)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			chain.doFilter(request, response);
 			return;
 		}
@@ -74,7 +72,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			accessJwtToken = jwtService.createAccessToken(id, username);
 			response.addHeader(JwtProperties.HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + accessJwtToken);
 		} else {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			chain.doFilter(request, response);
 			return;
 		}

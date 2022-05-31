@@ -58,8 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				// LOGIN
 				.antMatchers("/api/v1/login/**").permitAll()
 				// MEMBER
-				.antMatchers("/api/v1/member/**")
-				.access("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or not hasRole('ROLE_USER')")
+//				.antMatchers("/api/v1/member/**")
+//				.access("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or not hasRole('ROLE_USER')")
 				// ADMIN
 				.antMatchers("/api/v1/admin/**")
 				.access("hasRole('ROLE_ADMIN')")
