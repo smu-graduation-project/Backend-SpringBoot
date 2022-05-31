@@ -2,6 +2,7 @@ package com.graduatioinProject.sensorMonitoring.productData.battery.entity;
 
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,11 +30,10 @@ public class Battery {
     private String type;
     private String information;
 
+    private String imageName;
     private String imageUrl;
+    private long image_size;
 
     @ManyToOne(targetEntity = Site.class)
     private Site site;
-
-    @OneToMany(targetEntity = Node.class)
-    private Set<Node> nodes;
 }

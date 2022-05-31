@@ -34,8 +34,9 @@ public class Site {
     private double gpsXPos;
     private double gpsYPos;
 
-    @OneToMany(targetEntity = Battery.class)
-    private Set<Battery> batteries;
+    /**
+     * User와 권한 연결
+     */
 
     public SiteResponse toResponse() {
 
