@@ -12,7 +12,9 @@ import java.util.List;
 public class ResponseService {
 
 	public CommonResult successResult() {
-		return setSuccess(new CommonResult());
+		CommonResult result = new CommonResult();
+		setSuccess(result);
+		return result;
 	}
 
 	public CommonResult failResult(String message) {
@@ -37,10 +39,9 @@ public class ResponseService {
 		return list;
 	}
 
-	private CommonResult setSuccess(CommonResult result) {
+	private void setSuccess(CommonResult result) {
 		result.setSuccess(true);
 		result.setCode(CommonResponse.SUCCESS.getCode());
 		result.setMessage(CommonResponse.SUCCESS.getMessage());
-		return result;
 	}
 }
