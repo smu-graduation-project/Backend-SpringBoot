@@ -17,6 +17,7 @@ public enum ExMessage {
 	, JWT_ERROR_EXPIRED("JWT 토큰이 만료되었습니다.")
 	, JWT_ACCESS_DENIED("접근이 거부되었습니다.")
 	, LOGIN_ERROR_FAIL("로그인 실패")
+	, DATA_ERROR_NOT_FOUND("해당 데이터를 찾을 수 없습니다.")
 	;
 
 	private final String message;
