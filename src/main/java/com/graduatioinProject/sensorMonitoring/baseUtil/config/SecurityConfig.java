@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().mvcMatchers(
 				"/image/**",
 				"/api/v1/signup",
-				"/api/v1/login/success"
+				"/exception"
 		); // /image/** 있는 모든 파일들은 시큐리티 적용을 무시한다.
 		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적인 리소스들에 대해서 시큐리티 적용 무시.
 	}

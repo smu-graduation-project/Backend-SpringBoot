@@ -13,6 +13,7 @@ import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepositor
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,30 +45,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	// login 요청 시 로그인을 위해 실행되는 함수
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		log.info("로그인 시도 : JwtAuthenticationFilter.attemptAuthentication");
+		log.info("TRY LOGIN USERNAME & PASSWORD : 인증 검증 _ JwtAuthenticationFilter.attemptAuthentication");
 		ObjectMapper om = new ObjectMapper();
 		try {
-			// 1. username, password 받는다 -> 임시 authenticationToken 발급
 			LoginReq login = om.readValue(request.getInputStream(), LoginReq.class);
-			UsernamePasswordAuthenticationToken authenticationToken =
+			Authentication authentication =
 					new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
-			// 2. 정상인지 로그인 시도를 해본다.
-			// authenticationToken을 넘기면 PrincipalDetailsService.class -> loadUserByUsername() 실행, password를 검증한다.
-			return authenticationManager.authenticate(authenticationToken);
-			// 3. 로그인이 되었다.
-			// 4. authentication을 반환해준다.
-			// authentication 객체를 반환하여 session에 저장. 이를 통해 편리하게 권한관리를 할 수 있다.
+			return authenticationManager.authenticate(authentication);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	// attemptAuthentication() 실행 후 인증이 정상적으로 완료되면 실행된다.
+	// 인증이 정상적으로 완료되면 실행된다.
 	// JWT 토큰을 만들어서 request 요청한 사용자에게 JWT 토큰을 response 해준다.
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-		log.info("인증 완료 : JwtAuthenticationFilter.successfulAuthentication");
+		log.info("인증 완료 : successfulAuthentication");
 
 		PrincipalDetails principal = (PrincipalDetails) authResult.getPrincipal();
 		Member member = principal.getMember();
@@ -77,20 +72,33 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		// login 성공 -> Refresh 토큰 재발급
 		jwtService.setRefreshToken(member.getUsername(), refreshJwt);
 
-		response.addHeader(JwtProperties.HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + accessJwt); // accessJwt 응답 헤더에 추가
-		response.addHeader(JwtProperties.REFRESH_HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + refreshJwt); // refreshJwt 응답 헤더에 추가
-
-		response.sendRedirect("/api/v1/login/success");
+		response.addHeader(JwtProperties.HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + accessJwt);
+		response.addHeader(JwtProperties.REFRESH_HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + refreshJwt);
+		setResponse(response, "로그인 성공");
 		log.info("===============================인증 프로세스 완료========================================");
 	}
 
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+		log.info("인증 실패 : unsuccessfulAuthentication");
 		String failReason = failed.getMessage().equals("CannotFoundMember") ? "CannotFoundMember" : "WrongPassword";
 
-		log.error("FAIL : " + failReason);
+		log.error("이유 : " + failReason);
+		request.setAttribute("Exception", failReason);
 		response.setHeader("reason", failReason);
 		response.sendError(HttpServletResponse.SC_BAD_REQUEST, failReason);
 		log.info("===============================인증 프로세스 완료========================================");
+	}
+
+	private void setResponse(HttpServletResponse response, String message) throws IOException {
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json;charset=UTF-8");
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("success", true);
+		jsonObject.put("code", 1);
+		jsonObject.put("message", message);
+
+		response.getWriter().print(jsonObject);
 	}
 }

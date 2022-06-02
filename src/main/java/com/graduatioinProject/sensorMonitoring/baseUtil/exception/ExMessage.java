@@ -12,6 +12,7 @@ public enum ExMessage {
 	, MEMBER_ERROR_DUPLICATE("해당 아이디의 회원이 이미 존재합니다.")
 	, MEMBER_ERROR_USER_ID_FORMAT("아이디 형식을 맞춰주세요.")
 	, MEMBER_ERROR_PASSWORD("패스워드가 일치하지 않습니다.")
+	, JWT_ERROR_NEED_LOGIN("다시 로그인 해주세요.")
 	, JWT_ERROR_REFRESH_TOKEN("REFRESH JWT 토큰이 잘못되었습니다.")
 	, JWT_ERROR_FORMAT("JWT 토큰이 잘못되었습니다.")
 	, JWT_ERROR_EXPIRED("JWT 토큰이 만료되었습니다.")
