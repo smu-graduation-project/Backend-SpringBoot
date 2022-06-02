@@ -52,7 +52,6 @@ public class HomeController {
 		} catch (Exception e) {
 			return responseService.failResult(e.getMessage());
 		}
-
 	}
 
 	@PostMapping("/signup")

@@ -47,6 +47,7 @@ public class JwtService {
 				.ifPresent(m -> m.setRefreshToken(null));
 	}
 
+	@Transactional
 	public void logout(HttpServletRequest request) {
 		try {
 			checkHeaderValid(request);
