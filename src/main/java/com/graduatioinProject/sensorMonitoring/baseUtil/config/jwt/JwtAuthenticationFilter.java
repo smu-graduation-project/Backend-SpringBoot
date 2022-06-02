@@ -1,25 +1,18 @@
 package com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.auth.PrincipalDetails;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
-import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.dto.LoginReq;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
-import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -27,8 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
 
 /*
  스프링 시큐리티에서 제공하는 UsernamePasswordAuthenticationFilter
@@ -74,29 +65,41 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		response.addHeader(JwtProperties.HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + accessJwt);
 		response.addHeader(JwtProperties.REFRESH_HEADER_PREFIX, JwtProperties.TOKEN_PREFIX + refreshJwt);
-		setResponse(response, "로그인 성공");
+		setSuccessResponse(response, "로그인 성공");
 		log.info("===============================인증 프로세스 완료========================================");
 	}
 
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 		log.info("인증 실패 : unsuccessfulAuthentication");
-		String failReason = failed.getMessage().equals("CannotFoundMember") ? "CannotFoundMember" : "WrongPassword";
+		String failReason =
+				failed.getMessage().equals(ExMessage.MEMBER_ERROR_NOT_FOUND_ENG.getMessage())
+						? ExMessage.MEMBER_ERROR_NOT_FOUND.getMessage()
+						: ExMessage.MEMBER_ERROR_PASSWORD.getMessage();
 
-		log.error("이유 : " + failReason);
-		request.setAttribute("Exception", failReason);
-		response.setHeader("reason", failReason);
-		response.sendError(HttpServletResponse.SC_BAD_REQUEST, failReason);
+		setFailResponse(response, failReason);
 		log.info("===============================인증 프로세스 완료========================================");
 	}
 
-	private void setResponse(HttpServletResponse response, String message) throws IOException {
+	private void setSuccessResponse(HttpServletResponse response, String message) throws IOException {
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json;charset=UTF-8");
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("success", true);
 		jsonObject.put("code", 1);
+		jsonObject.put("message", message);
+
+		response.getWriter().print(jsonObject);
+	}
+
+	private void setFailResponse(HttpServletResponse response, String message) throws IOException {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		response.setContentType("application/json;charset=UTF-8");
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("success", false);
+		jsonObject.put("code", -1);
 		jsonObject.put("message", message);
 
 		response.getWriter().print(jsonObject);
