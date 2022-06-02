@@ -29,12 +29,6 @@ public class JwtService {
 	private String SECRET_KEY;
 	private final MemberRepository memberRepository;
 
-//	@Transactional(readOnly = true)
-//	public Member getMember(String username) {
-//		return memberRepository.findByUsername(username)
-//				.orElseThrow(() -> new BussinessException(ExMessage.MEMBER_ERROR_NOT_FOUND));
-//	}
-
 	@Transactional(readOnly = true)
 	public Member getMemberByRefreshToken(String token) {
 		return memberRepository.findByRefreshToken(token)
@@ -51,6 +45,18 @@ public class JwtService {
 	public void removeRefreshToken(String token) {
 		memberRepository.findByRefreshToken(token)
 				.ifPresent(m -> m.setRefreshToken(null));
+	}
+
+	public void logout(HttpServletRequest request) {
+		try {
+			checkHeaderValid(request);
+			String refreshJwtToken = request
+					.getHeader(JwtProperties.REFRESH_HEADER_PREFIX)
+					.replace(JwtProperties.TOKEN_PREFIX, "");
+			removeRefreshToken(refreshJwtToken);
+		} catch (Exception e) {
+			throw new CustomJwtException(JwtErrorCode.JWT_REFRESH_NOT_VALID.name());
+		}
 	}
 
 	public String createAccessToken(Long id, String username) {
@@ -73,8 +79,10 @@ public class JwtService {
 		String accessJwt = request.getHeader(JwtProperties.HEADER_PREFIX);
 		String refreshJwt = request.getHeader(JwtProperties.REFRESH_HEADER_PREFIX);
 
-		if (accessJwt == null || refreshJwt == null) {
+		if (accessJwt == null) {
 			throw new CustomJwtException(JwtErrorCode.JWT_ACCESS_NOT_VALID.getCode());
+		} else if (refreshJwt == null) {
+			throw new CustomJwtException(JwtErrorCode.JWT_REFRESH_NOT_VALID.getCode());
 		}
 	}
 
@@ -117,20 +125,5 @@ public class JwtService {
 			return true;
 		}
 		return false;
-	}
-
-	@Transactional
-	public void logout(HttpServletRequest request) {
-		try {
-			checkHeaderValid(request);
-			String refreshJwtToken = request
-					.getHeader(JwtProperties.REFRESH_HEADER_PREFIX)
-					.replace(JwtProperties.TOKEN_PREFIX, "");
-
-			getMemberByRefreshToken(refreshJwtToken)
-					.setRefreshToken(null);
-		} catch (Exception e) {
-			throw new CustomJwtException(JwtErrorCode.JWT_REFRESH_NOT_VALID.name());
-		}
 	}
 }
