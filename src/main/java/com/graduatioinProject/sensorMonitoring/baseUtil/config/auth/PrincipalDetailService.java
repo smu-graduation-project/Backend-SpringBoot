@@ -23,7 +23,6 @@ public class PrincipalDetailService implements UserDetailsService {
 	// 시큐리티 세션(내부 Authentication(내부 UserDetails(PrincipalDetails)))
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		log.info("PrincipalDetailService.loadUserByUsername");
 		log.info("LOGIN");
 		Member member = memberRepository.findByUsername(username)
 				.orElseThrow(() -> new BussinessException(ExMessage.MEMBER_ERROR_NOT_FOUND_ENG));
