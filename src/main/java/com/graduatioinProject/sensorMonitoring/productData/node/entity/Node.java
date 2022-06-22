@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Node {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long nodeId;
+    private Long id;
 
     @Column(unique = true)
     private Long port;
@@ -24,7 +24,7 @@ public class Node {
     private String type;
     private String information;
 
-    @ManyToOne(targetEntity = Battery.class)
+    @ManyToOne(targetEntity = Battery.class, fetch = FetchType.LAZY)
     private Battery battery;
 
     public NodeResponse toResponse() {

@@ -1,15 +1,15 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.entity;
 
-import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
+import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,9 +34,10 @@ public class Site {
     private double gpsXPos;
     private double gpsYPos;
 
-    /**
-     * User와 권한 연결
-     */
+
+    @ManyToMany(targetEntity = Member.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Set<Member> members;  // Member의 Role을 확인하여 권한확인
 
     public SiteResponse toResponse() {
 
@@ -55,6 +56,7 @@ public class Site {
         return SitePagingResponse
                 .builder()
                 .name(this.name)
+                .type(this.type)
                 .gpsXPos(this.gpsXPos)
                 .gpsYPos(this.gpsYPos)
                 .build();

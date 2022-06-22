@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.productData.battery.dto;
 
+import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import lombok.Data;
 
 /**
@@ -13,5 +14,13 @@ public class BatteryRequest {
     private String type;
     private String information;
 
-    private Long siteId;
+    //private Long siteId;
+
+    public Battery toEntity() {
+        return Battery.builder()
+                .name(this.name)
+                .type(this.type)
+                .information(this.information)
+                .build();
+    }
 }

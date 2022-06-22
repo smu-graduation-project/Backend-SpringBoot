@@ -2,13 +2,18 @@ package com.graduatioinProject.sensorMonitoring.productData.battery.service;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
+import com.graduatioinProject.sensorMonitoring.member.dto.Role;
+import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.repository.BatteryRepository;
+import com.graduatioinProject.sensorMonitoring.productData.battery.repository.BatteryRepositoryCustom;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -18,6 +23,7 @@ import java.util.UUID;
 @Service
 public class BatteryService {
     private BatteryRepository batteryRepository;
+    private BatteryRepositoryCustom batteryRepositoryCustom;
 
     public Battery getBattery(Long id) {
         Optional<Battery> response = batteryRepository.findById(id);
@@ -27,8 +33,12 @@ public class BatteryService {
         throw (new BussinessException(ExMessage.BATTERY_ERROR_NOT_FOUND.getMessage()));
     }
 
-    public Battery setBattery(Battery battery) {
-        return batteryRepository.save(battery);
+    public void setBattery(Battery battery) {
+        try {
+            batteryRepository.save(battery);
+        } catch (Exception e) {
+            throw new BussinessException(e.getMessage());
+        }
     }
 
     public void uploadImage(MultipartFile image, Long id) {
@@ -47,5 +57,10 @@ public class BatteryService {
         } catch (Exception e) {
             throw new BussinessException(ExMessage.IMAGE_NOT_UPLOADED.getMessage());
         }
+    }
+
+    public Boolean checkMemberRole(Member member, Long batteryId) {
+        Set<Member> members = batteryRepositoryCustom.findByIdMemberRole(batteryId).getSite().getMembers();
+        return members.contains(member);
     }
 }

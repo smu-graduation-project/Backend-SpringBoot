@@ -34,6 +34,6 @@ public class Battery {
     private String imageUrl;
     private long image_size;
 
-    @ManyToOne(targetEntity = Site.class)
+    @ManyToOne(targetEntity = Site.class, fetch = FetchType.LAZY)
     private Site site;
 }

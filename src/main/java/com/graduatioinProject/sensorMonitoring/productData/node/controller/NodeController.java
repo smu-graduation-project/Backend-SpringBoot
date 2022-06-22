@@ -1,11 +1,14 @@
 package com.graduatioinProject.sensorMonitoring.productData.node.controller;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.annotation.LoginCheck;
+import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
+import com.graduatioinProject.sensorMonitoring.member.entity.Member;
+import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.service.NodeService;
@@ -25,20 +28,26 @@ public class NodeController {
 
     private final NodeService nodeService;
     private final ResponseService responseService;
+    private final MemberService memberService;
+    private final JwtService jwtService;
 
     @LoginCheck
     @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
     @GetMapping("/detail/{id}")
     public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest,
-                                                    @PathVariable Long id) {
+                                                    @PathVariable Long id) {ㅗㅎ
+        Member member = jwtService.getMemberByRefreshToken(httpServletRequest.getHeader("token"));
 
-        NodeResponse response = nodeService.getNodeResponse(id);
-        try {
-            return responseService.singleResult(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BussinessException(e.getMessage());
+        if (nodeService.checkMemberRole(member, id)) {
+            NodeResponse response = nodeService.getNodeResponse(id);
+            try {
+                return responseService.singleResult(response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new BussinessException(e.getMessage());
+            }
         }
+        throw new BussinessException(ExMessage.NO_AUTHORITY);
     }
 
     @ApiOperation(value = "노드 추가", notes = "노드 관련 정보를 받아 노드를 추가(프론트에서 처리 X)")

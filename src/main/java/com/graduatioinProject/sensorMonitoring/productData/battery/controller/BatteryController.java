@@ -3,6 +3,7 @@ package com.graduatioinProject.sensorMonitoring.productData.battery.controller;
 import com.graduatioinProject.sensorMonitoring.baseUtil.annotation.LoginCheck;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryRequest;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
@@ -42,21 +43,23 @@ public class BatteryController {
     private final ResponseService responseService;
 
     @LoginCheck
-    @ApiOperation(value = "배터리 추가", notes = "배터리 데이터 추가")
-    @PostMapping("/upload/image/")
+    //@ApiOperation(value = "배터리 추가", notes = "배터리 데이터 추가")
+    @PostMapping("/upload/image/{id}")
     // https://kim-jong-hyun.tistory.com/78?category=910543 나중에 AWS에 올리면, S3로 변경
     public CommonResult setBattery(HttpServletRequest httpServletRequest,
-                                   @RequestBody BatteryRequest batteryRequest,
+                                   @PathVariable Long id,
                                    @RequestParam("image") MultipartFile image) {
 
-        Battery battery = batteryService.setBattery(Battery.builder()
-                        .name(batteryRequest.getName())
-                        .type(batteryRequest.getType())
-                        .information(batteryRequest.getInformation())
-                        .site(siteService.getSite(batteryRequest.getSiteId()))
-                        .build());
+        batteryService.uploadImage(image, id);
+        return responseService.successResult();
+    }
 
-        batteryService.uploadImage(image, battery.getId());
+    @LoginCheck
+    @ApiOperation(value = "배터리 추가", notes = "배터리 데이터 추가")
+    @PostMapping("/add")
+    public CommonResult addBattery(HttpServletRequest httpServletRequest,
+                                   @RequestBody BatteryRequest request) {
+        batteryService.setBattery(request.toEntity());
         return responseService.successResult();
     }
 

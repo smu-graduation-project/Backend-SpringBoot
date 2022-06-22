@@ -69,7 +69,7 @@ public class SiteController {
     }
 
     @LoginCheck
-    @ApiOperation(value = "사이트 List", notes = "사이트 정보 List")
+    @ApiOperation(value = "Site Paging List", notes = "사이트 정보 List")
     @GetMapping("/list/{page}")
     public ListResult<SitePagingResponse> getSiteList(HttpServletRequest httpServletRequest,
                                                       @PathVariable int page) {
@@ -78,8 +78,8 @@ public class SiteController {
     }
 
     @LoginCheck
-    @ApiOperation(value = "사이트 paing", notes = "사이트 paging 정보")
-    @GetMapping("/list/{page}")
+    @ApiOperation(value = "Site Paing Information", notes = "사이트 paging 정보")
+    @GetMapping("/paging/{page}")
     public SingleResult<SitePageResponse> getSitePage(HttpServletRequest httpServletRequest,
                                                       @PathVariable int page) {
         Page<Site> sitePage = siteService.getSitePage(page);

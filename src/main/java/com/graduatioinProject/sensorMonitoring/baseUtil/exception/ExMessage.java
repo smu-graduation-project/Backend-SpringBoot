@@ -23,6 +23,7 @@ public enum ExMessage {
 	, NODE_ERROR_NOT_FOUND("해당 NODE를 찾을 수 없습니다.")
 	, SESSION_ERROR_MEMBER_NOT_FOUND("로그인 정보를 찾을 수 없습니다.")
 	, IMAGE_NOT_UPLOADED("이미지 업로드에 실패하였습니다.")
+	, NO_AUTHORITY("접근권한이 없습니다.")
 	;
 
 	private final String message;
