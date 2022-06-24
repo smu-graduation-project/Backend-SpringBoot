@@ -30,4 +30,14 @@ public class NodeRepositoryCustom {
                 .where(qNode.id.eq(id))
                 .fetchOne();
     }
+
+    public Node findByIdBattery(Long id) {
+        QBattery qBattery = QBattery.battery;
+        QNode qNode = QNode.node;
+        return jpaQueryFactory
+                .selectFrom(qNode)
+                .join(qNode.battery, qBattery).fetchJoin()
+                .where(qNode.id.eq(id))
+                .fetchOne();
+    }
 }

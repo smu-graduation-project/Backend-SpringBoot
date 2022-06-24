@@ -3,6 +3,7 @@ package com.graduatioinProject.sensorMonitoring.productData.node.service;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
+import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.repository.NodeRepository;
@@ -41,8 +42,9 @@ public class NodeService {
         return nodeDetailRepository.findById(id).isPresent();
     }
 
-    public Boolean checkMemberRole(Member member, Long nodeId) {
+    public Boolean chekMemberAuthority(Member member, Long nodeId) {
         Set<Member> members = nodeRepositoryCustom.findByIdMemberRole(nodeId).getBattery().getSite().getMembers();
         return members.contains(member);
     }
+
 }

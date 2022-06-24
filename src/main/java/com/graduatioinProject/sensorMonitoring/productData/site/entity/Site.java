@@ -34,7 +34,6 @@ public class Site {
     private double gpsXPos;
     private double gpsYPos;
 
-
     @ManyToMany(targetEntity = Member.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Set<Member> members;  // Member의 Role을 확인하여 권한확인

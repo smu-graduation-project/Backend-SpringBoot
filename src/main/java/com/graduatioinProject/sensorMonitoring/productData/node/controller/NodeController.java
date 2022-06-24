@@ -8,7 +8,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessExcep
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
-import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
+import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.service.NodeService;
@@ -27,18 +27,19 @@ import javax.servlet.http.HttpServletRequest;
 public class NodeController {
 
     private final NodeService nodeService;
+    private final BatteryService batteryService;
     private final ResponseService responseService;
-    private final MemberService memberService;
     private final JwtService jwtService;
 
     @LoginCheck
     @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
     @GetMapping("/detail/{id}")
     public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest,
-                                                    @PathVariable Long id) {ㅗㅎ
-        Member member = jwtService.getMemberByRefreshToken(httpServletRequest.getHeader("token"));
+                                                    @PathVariable Long id) {
+        
+        Member member = jwtService.getMemberByRefreshToken(httpServletRequest.getHeader("Authorization"));
 
-        if (nodeService.checkMemberRole(member, id)) {
+        if (nodeService.chekMemberAuthority(member, id)) {
             NodeResponse response = nodeService.getNodeResponse(id);
             try {
                 return responseService.singleResult(response);
@@ -75,22 +76,23 @@ public class NodeController {
                                        @RequestBody NodeUpdateRequest request,
                                        @PathVariable Long id) {
 
-        /**
-         * 권헌 확인
-         * + 해당하는 id의 배터리가 있는지
-         */
+        Member member = jwtService.getMemberByRefreshToken(httpServletRequest.getHeader("Authorization"));
 
-        if(!nodeService.checkNode(id)) {
-            return responseService.failResult(ExMessage.NODE_ERROR_NOT_FOUND.getMessage());
+        if (nodeService.chekMemberAuthority(member, id)) {
+            if (!nodeService.checkNode(id)) {
+                return responseService.failResult(ExMessage.NODE_ERROR_NOT_FOUND.getMessage());
+            }
+
+            try {
+                batteryService.getBattery(request.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
+                nodeService.setNode(request.toEntity());
+                return responseService.successResult();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new BussinessException(e.getMessage());
+            }
         }
-
-        try {
-            nodeService.setNode(request.toEntity());
-            return  responseService.successResult();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BussinessException(e.getMessage());
-        }
+        throw new BussinessException(ExMessage.NO_AUTHORITY);
     }
 }
