@@ -1,6 +1,5 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.contorller;
 
-import com.graduatioinProject.sensorMonitoring.baseUtil.annotation.LoginCheck;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
@@ -36,7 +35,6 @@ public class SiteController {
     private final SiteService siteService;
     private final ResponseService responseService;
 
-    @LoginCheck
     @ApiOperation(value = "사이트 추가", notes = "사이트관련 정보를 받아 Site 추가")
     @PostMapping("/add")
     public CommonResult addSite(HttpServletRequest httpServletRequest,
@@ -46,7 +44,6 @@ public class SiteController {
         return responseService.successResult();
     }
 
-    @LoginCheck
     @ApiOperation(value = "사이트 수정", notes = "사이트관련 정보를 받아 Site 수정")
     @PutMapping("/update/{id}")
     public CommonResult updateSite(HttpServletRequest httpServletRequest,
@@ -59,7 +56,6 @@ public class SiteController {
         return responseService.successResult();
     }
 
-    @LoginCheck
     @ApiOperation(value = "사이트 정보", notes = "사이트 id를 받아 해당하는 Site 상세정보를 반환")
     @GetMapping("/{id}")
     public SingleResult<SiteResponse> getSite(HttpServletRequest httpServletRequest,
@@ -68,7 +64,6 @@ public class SiteController {
         return responseService.singleResult(result);
     }
 
-    @LoginCheck
     @ApiOperation(value = "Site Paging List", notes = "사이트 정보 List")
     @GetMapping("/list/{page}")
     public ListResult<SitePagingResponse> getSiteList(HttpServletRequest httpServletRequest,
@@ -77,7 +72,6 @@ public class SiteController {
         return responseService.listResult(siteList);
     }
 
-    @LoginCheck
     @ApiOperation(value = "Site Paing Information", notes = "사이트 paging 정보")
     @GetMapping("/paging/{page}")
     public SingleResult<SitePageResponse> getSitePage(HttpServletRequest httpServletRequest,

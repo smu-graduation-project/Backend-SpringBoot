@@ -1,6 +1,5 @@
 package com.graduatioinProject.sensorMonitoring.formerData.Controller;
 
-import com.graduatioinProject.sensorMonitoring.baseUtil.annotation.LoginCheck;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
@@ -34,7 +33,6 @@ public class FormerDataController {
     private final ResponseService responseService;
     private final NodeService nodeService;
 
-    @LoginCheck
     @GetMapping("/electricCurrent/list/{id}")
     @ApiOperation(value = "전류 이전 데이터 목록", notes = "날짜와 id 받아 전류 이전 데이러 목록을 반환")
     public ListResult<FormerDataResponse> getElectricCurrentList(HttpServletRequest httpServletRequest,
@@ -49,7 +47,6 @@ public class FormerDataController {
         }
     }
 
-    @LoginCheck
     @GetMapping("/temperature/list/{id}")
     @ApiOperation(value = "온도 이전 데이터 목록", notes = "날짜와 id를 받아 온도 이전 데이러 목록을 반환")
     public ListResult<FormerDataResponse>  getTemperatureList(HttpServletRequest httpServletRequest,
@@ -64,7 +61,6 @@ public class FormerDataController {
         }
     }
 
-    @LoginCheck
     @GetMapping("/voltage/list/{id}")
     @ApiOperation(value = "전압 이전 데이터 목록", notes = "날짜와 id를 받아 전압 이전 데이러 목록을 반환")
     public ListResult<FormerDataResponse>  getVoltageList(HttpServletRequest httpServletRequest,

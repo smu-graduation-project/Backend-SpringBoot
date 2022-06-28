@@ -26,7 +26,6 @@ public class NodeRepositoryCustom {
                 .selectFrom(qNode)
                 .join(qNode.battery, qBattery).fetchJoin()
                 .join(qBattery.site, qSite).fetchJoin()
-                .join(qSite.member).fetchJoin()
                 .where(qNode.id.eq(id))
                 .fetchOne();
     }

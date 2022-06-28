@@ -59,8 +59,8 @@ public class BatteryService {
         }
     }
 
-    public Boolean checkMemberRole(Member member, Long batteryId) {
-        Set<Member> members = batteryRepositoryCustom.findByIdMemberRole(batteryId).getSite().getMembers();
-        return members.contains(member);
-    }
+//    public Boolean checkMemberRole(Member member, Long batteryId) {
+//        Set<Member> members = batteryRepositoryCustom.findByIdMemberRole(batteryId).getSite().getMembers();
+//        return members.contains(member);
+//    }
 }

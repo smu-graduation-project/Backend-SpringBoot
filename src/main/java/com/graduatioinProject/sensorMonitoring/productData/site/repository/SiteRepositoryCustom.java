@@ -24,7 +24,6 @@ public class SiteRepositoryCustom {
         QSite qSite = QSite.site;
         return jpaQueryFactory
                 .selectFrom(qSite)
-                .join(qSite.member).fetchJoin()
                 .where(qSite.id.eq(id))
                 .fetchOne();
     }

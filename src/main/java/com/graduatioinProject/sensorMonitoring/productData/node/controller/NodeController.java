@@ -1,13 +1,14 @@
 package com.graduatioinProject.sensorMonitoring.productData.node.controller;
 
-import com.graduatioinProject.sensorMonitoring.baseUtil.annotation.LoginCheck;
+import com.auth0.jwt.JWT;
+import com.graduatioinProject.sensorMonitoring.baseUtil.annotation.AuthorityCheckUser;
+import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
-import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
@@ -31,24 +32,21 @@ public class NodeController {
     private final ResponseService responseService;
     private final JwtService jwtService;
 
-    @LoginCheck
     @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
     @GetMapping("/detail/{id}")
-    public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest,
-                                                    @PathVariable Long id) {
+    public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest, @PathVariable Long id) {
         
-        Member member = jwtService.getMemberByRefreshToken(httpServletRequest.getHeader("Authorization"));
-
-        if (nodeService.chekMemberAuthority(member, id)) {
-            NodeResponse response = nodeService.getNodeResponse(id);
-            try {
-                return responseService.singleResult(response);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new BussinessException(e.getMessage());
-            }
+//        String accessToken = httpServletRequest.getHeader("Authorization");
+//        Long memberId = JWT.decode(accessToken).getClaim(JwtProperties.ID).asLong();
+//
+        NodeResponse response = nodeService.findByIdResponse(id);
+        try {
+            return responseService.singleResult(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BussinessException(e.getMessage());
         }
-        throw new BussinessException(ExMessage.NO_AUTHORITY);
+
     }
 
     @ApiOperation(value = "노드 추가", notes = "노드 관련 정보를 받아 노드를 추가(프론트에서 처리 X)")
@@ -69,30 +67,24 @@ public class NodeController {
         }
     }
 
-    @LoginCheck
     @ApiOperation(value = "노드 수정", notes = "노드 관련 정보를 받아 노드정보를 수정합니다.")
     @PutMapping("/update/{id}")
     public CommonResult setNodeDetail( HttpServletRequest httpServletRequest,
                                        @RequestBody NodeUpdateRequest request,
                                        @PathVariable Long id) {
 
-        Member member = jwtService.getMemberByRefreshToken(httpServletRequest.getHeader("Authorization"));
-
-        if (nodeService.chekMemberAuthority(member, id)) {
-            if (!nodeService.checkNode(id)) {
-                return responseService.failResult(ExMessage.NODE_ERROR_NOT_FOUND.getMessage());
-            }
-
-            try {
-                batteryService.getBattery(request.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
-                nodeService.setNode(request.toEntity());
-                return responseService.successResult();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new BussinessException(e.getMessage());
-            }
+        if (!nodeService.checkNode(id)) {
+            return responseService.failResult(ExMessage.NODE_ERROR_NOT_FOUND.getMessage());
         }
-        throw new BussinessException(ExMessage.NO_AUTHORITY);
+
+        try {
+            batteryService.getBattery(request.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
+            nodeService.setNode(request.toEntity());
+            return responseService.successResult();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BussinessException(e.getMessage());
+        }
     }
 }

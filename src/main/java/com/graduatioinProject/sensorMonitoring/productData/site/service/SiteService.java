@@ -59,8 +59,8 @@ public class SiteService {
                 .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()));
     }
 
-    public Boolean checkMemberRole(Member member, Long siteId) {
-        Set<Member> members = siteRepositoryCustom.findByIdMemberRole(siteId).getMembers();
-        return members.contains(member);
-    }
+//    public Boolean checkMemberRole(Member member, Long siteId) {
+//        Set<Member> members = siteRepositoryCustom.findByIdMemberRole(siteId).getMembers();
+//        return members.contains(member);
+//    }
 }

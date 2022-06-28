@@ -25,7 +25,6 @@ public class BatteryRepositoryCustom {
         return jpaQueryFactory
                 .selectFrom(qBattery)
                 .join(qBattery.site, qSite).fetchJoin()
-                .join(qSite.member).fetchJoin()
                 .where(qBattery.id.eq(id))
                 .fetchOne();
     }
