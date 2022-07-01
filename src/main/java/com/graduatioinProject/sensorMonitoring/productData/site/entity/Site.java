@@ -1,6 +1,7 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.entity;
 
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
+import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,9 @@ public class Site {
 
     private double gpsXPos;
     private double gpsYPos;
+
+    @OneToMany(targetEntity = Battery.class, fetch = FetchType.LAZY)
+    private List<Battery> battery;
 
     public SiteResponse toResponse() {
 

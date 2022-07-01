@@ -1,9 +1,12 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.contorller;
 
+import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
+import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePageResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author : Jeeseob
@@ -34,6 +38,22 @@ public class SiteController {
 
     private final SiteService siteService;
     private final ResponseService responseService;
+
+
+    @ApiOperation(value = "사이트 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 사이트 정보를 반환")
+    @GetMapping("/all")
+    public ListResult<SiteResponse> getAllNode(HttpServletRequest httpServletRequest) {
+        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
+        /**
+         * 페이징을 적용해야할지 의문
+         */
+        return responseService.listResult(
+                siteService.findAll()
+                        .stream()
+                        .filter(i -> siteService.chekMemberAuthorityUser(memberId, i.getId()))
+                        .map(Site::toResponse)
+                        .collect(Collectors.toList()));
+    }
 
     @ApiOperation(value = "사이트 추가", notes = "사이트관련 정보를 받아 Site 추가")
     @PostMapping("/add")

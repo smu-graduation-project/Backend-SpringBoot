@@ -15,7 +15,6 @@ public class BatteryRequest {
     private String information;
 
     //private Long siteId;
-
     public Battery toEntity() {
         return Battery.builder()
                 .name(this.name)

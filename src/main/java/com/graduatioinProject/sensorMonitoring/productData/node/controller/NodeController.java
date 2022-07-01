@@ -1,10 +1,8 @@
 package com.graduatioinProject.sensorMonitoring.productData.node.controller;
 
-import com.auth0.jwt.JWT;
-import com.graduatioinProject.sensorMonitoring.baseUtil.annotation.AuthorityCheckUser;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
-import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
@@ -20,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(tags = "06. 노드")
 @RequestMapping("api/product/node")
@@ -30,15 +30,40 @@ public class NodeController {
     private final NodeService nodeService;
     private final BatteryService batteryService;
     private final ResponseService responseService;
-    private final JwtService jwtService;
+
+    @ApiOperation(value = "노드 상세정보", notes = "배터리 id를 받아 해당하는 노드의 정보를 반환")
+    @GetMapping("/list/{id}")
+    public ListResult<NodeResponse> getAllNodeByBattery(HttpServletRequest httpServletRequest, @PathVariable Long id) {
+        /**
+         * 페이징을 적용해야할지 의문
+         */
+        List<Node> nodeList = batteryService.findByIdCustom(id).getNode();
+        return responseService.listResult(
+                nodeService.findAll()
+                        .stream()
+                        .filter(i -> nodeList.contains(i))
+                        .map(Node::toResponse)
+                        .collect(Collectors.toList()));
+    }
+
+    @ApiOperation(value = "노드 리스트", notes = "해당 아이디로 접근 가능한 모든 node의 정보를 반환")
+    @GetMapping("/all")
+    public ListResult<NodeResponse> getAllNode(HttpServletRequest httpServletRequest) {
+        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
+        /**
+         * 페이징을 적용해야할지 의문
+         */
+        return responseService.listResult(
+                nodeService.findAll()
+                .stream()
+                .filter(i -> nodeService.chekMemberAuthorityUser(memberId, i.getId()))
+                .map(Node::toResponse)
+                .collect(Collectors.toList()));
+    }
 
     @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
     @GetMapping("/detail/{id}")
     public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest, @PathVariable Long id) {
-        
-//        String accessToken = httpServletRequest.getHeader("Authorization");
-//        Long memberId = JWT.decode(accessToken).getClaim(JwtProperties.ID).asLong();
-//
         NodeResponse response = nodeService.findByIdResponse(id);
         try {
             return responseService.singleResult(response);
@@ -58,7 +83,7 @@ public class NodeController {
          * 그렇게 하려면, 특정 IP만 가능하도록 설정하거나, 따로 암호화된 키를 가져야 할 것 같음.
          */
         try {
-            Long id = nodeService.setNode(Node.builder().port(port).build());
+            Long id = nodeService.save(Node.builder().port(port).build());
             return responseService.singleResult(String.valueOf(id));
 
         } catch (Exception e) {
@@ -78,8 +103,8 @@ public class NodeController {
         }
 
         try {
-            batteryService.getBattery(request.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
-            nodeService.setNode(request.toEntity());
+            batteryService.findById(request.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
+            nodeService.save(request.toEntity());
             return responseService.successResult();
 
         } catch (Exception e) {

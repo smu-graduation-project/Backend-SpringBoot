@@ -20,7 +20,17 @@ import org.springframework.stereotype.Repository;
 public class SiteRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Site findByIdMemberRole(Long id) {
+    public Site findByIdWithBattery(Long id) {
+        QSite qSite = QSite.site;
+        QBattery qBattery = QBattery.battery;
+
+        return jpaQueryFactory
+                .selectFrom(qSite)
+                .join(qBattery).fetchJoin()
+                .where(qSite.id.eq(id))
+                .fetchOne();
+    }
+    public Site findByIdWithMember(Long id) {
         QSite qSite = QSite.site;
         return jpaQueryFactory
                 .selectFrom(qSite)

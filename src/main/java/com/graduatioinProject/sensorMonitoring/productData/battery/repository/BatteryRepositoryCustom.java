@@ -19,7 +19,18 @@ import org.springframework.stereotype.Repository;
 public class BatteryRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Battery findByIdMemberRole(Long id) {
+    public Battery findByIdWithNode(Long id) {
+        QBattery qBattery = QBattery.battery;
+        QNode qNode = QNode.node;
+
+        return jpaQueryFactory
+                .selectFrom(qBattery)
+                .join(qBattery.node, qNode).fetchJoin()
+                .where(qBattery.id.eq(id))
+                .fetchOne();
+    }
+
+    public Battery findByIdWithMember(Long id) {
         QBattery qBattery = QBattery.battery;
         QSite qSite = QSite.site;
         return jpaQueryFactory

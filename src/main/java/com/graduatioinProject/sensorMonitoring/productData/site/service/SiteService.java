@@ -3,6 +3,7 @@ package com.graduatioinProject.sensorMonitoring.productData.site.service;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
+import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
@@ -32,6 +33,14 @@ public class SiteService {
     private final SiteRepository siteRepository;
     private final SiteRepositoryCustom siteRepositoryCustom;
 
+    public List<Site> findAll() {
+        return siteRepository.findAll();
+    }
+
+    public Site findByIdWithBattery(Long id) {
+        return siteRepositoryCustom.findByIdWithBattery(id);
+    }
+
     public void setSite(Site site) {
         siteRepository.save(site);
     }
@@ -57,6 +66,16 @@ public class SiteService {
     public Site getSite(Long id) {
         return siteRepository.findById(id)
                 .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()));
+    }
+
+    public Boolean chekMemberAuthorityUser(Long memberId, Long siteId) {
+        Site site = siteRepositoryCustom.findByIdWithMember(siteId);
+
+//        Member member = memberService.findById(memberId);
+//        return member.getSites().contains(site);
+
+        // 임시
+        return true;
     }
 
 //    public Boolean checkMemberRole(Member member, Long siteId) {

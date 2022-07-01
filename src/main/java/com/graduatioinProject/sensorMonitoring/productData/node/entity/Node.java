@@ -36,5 +36,4 @@ public class Node {
                 .information(this.information)
                 .build();
     }
-
 }
