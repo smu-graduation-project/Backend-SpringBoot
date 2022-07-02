@@ -2,10 +2,6 @@ package com.graduatioinProject.sensorMonitoring.productData.site.service;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
-import com.graduatioinProject.sensorMonitoring.member.entity.Member;
-import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
-import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
-import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import com.graduatioinProject.sensorMonitoring.productData.site.repository.SiteRepository;
@@ -16,9 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @Author : Jeeseob
@@ -37,11 +32,16 @@ public class SiteService {
         return siteRepository.findAll();
     }
 
+    public Site findById(Long id) {
+        return siteRepository.findById(id)
+                .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()));
+    }
+
     public Site findByIdWithBattery(Long id) {
         return siteRepositoryCustom.findByIdWithBattery(id);
     }
 
-    public void setSite(Site site) {
+    public void save(Site site) {
         siteRepository.save(site);
     }
 
@@ -49,23 +49,16 @@ public class SiteService {
         return siteRepository.findAll(PageRequest.of(page, PAGINGSIZE));
     }
 
-    public List<SitePagingResponse> getSiteList(int page) {
+    public List<Site> getSiteList(int page) {
         Page<Site> pageSite = siteRepository.findAll(PageRequest.of(page, PAGINGSIZE));
-        List<SitePagingResponse> pagingResponseList = new ArrayList<>();
-        pageSite.getContent().forEach(i -> pagingResponseList.add(i.toPagingResponse()));
 
-        return pagingResponseList;
+        return pageSite.stream().collect(Collectors.toList());
     }
 
     public SiteResponse getSiteResponse(Long id) {
         return siteRepository.findById(id)
                 .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()))
                 .toResponse();
-    }
-
-    public Site getSite(Long id) {
-        return siteRepository.findById(id)
-                .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()));
     }
 
     public Boolean chekMemberAuthorityUser(Long memberId, Long siteId) {

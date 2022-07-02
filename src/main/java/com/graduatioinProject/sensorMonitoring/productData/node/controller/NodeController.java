@@ -7,6 +7,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
+import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Api(tags = "06. 노드")
@@ -30,49 +30,6 @@ public class NodeController {
     private final NodeService nodeService;
     private final BatteryService batteryService;
     private final ResponseService responseService;
-
-    @ApiOperation(value = "노드 상세정보", notes = "배터리 id를 받아 해당하는 노드의 정보를 반환")
-    @GetMapping("/list/{id}")
-    public ListResult<NodeResponse> getAllNodeByBattery(HttpServletRequest httpServletRequest, @PathVariable Long id) {
-        /**
-         * 페이징을 적용해야할지 의문
-         */
-        List<Node> nodeList = batteryService.findByIdCustom(id).getNode();
-        return responseService.listResult(
-                nodeService.findAll()
-                        .stream()
-                        .filter(i -> nodeList.contains(i))
-                        .map(Node::toResponse)
-                        .collect(Collectors.toList()));
-    }
-
-    @ApiOperation(value = "노드 리스트", notes = "해당 아이디로 접근 가능한 모든 node의 정보를 반환")
-    @GetMapping("/all")
-    public ListResult<NodeResponse> getAllNode(HttpServletRequest httpServletRequest) {
-        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
-        /**
-         * 페이징을 적용해야할지 의문
-         */
-        return responseService.listResult(
-                nodeService.findAll()
-                .stream()
-                .filter(i -> nodeService.chekMemberAuthorityUser(memberId, i.getId()))
-                .map(Node::toResponse)
-                .collect(Collectors.toList()));
-    }
-
-    @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
-    @GetMapping("/detail/{id}")
-    public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest, @PathVariable Long id) {
-        NodeResponse response = nodeService.findByIdResponse(id);
-        try {
-            return responseService.singleResult(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BussinessException(e.getMessage());
-        }
-
-    }
 
     @ApiOperation(value = "노드 추가", notes = "노드 관련 정보를 받아 노드를 추가(프론트에서 처리 X)")
     @PostMapping("/add/{port}")
@@ -90,6 +47,20 @@ public class NodeController {
             e.printStackTrace();
             throw new BussinessException(e.getMessage());
         }
+    }
+
+    @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
+    @GetMapping("/detail/{id}")
+    public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest,
+                                                    @PathVariable Long id) {
+        NodeResponse response = nodeService.findByIdResponse(id);
+        try {
+            return responseService.singleResult(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BussinessException(e.getMessage());
+        }
+
     }
 
     @ApiOperation(value = "노드 수정", notes = "노드 관련 정보를 받아 노드정보를 수정합니다.")
@@ -111,5 +82,34 @@ public class NodeController {
             e.printStackTrace();
             throw new BussinessException(e.getMessage());
         }
+    }
+
+
+    @ApiOperation(value = "노드 리스트(batteryId)", notes = "해당 배터리와 연결된 모든 node의 정보를 반환")
+    @GetMapping("battery/{id}/list")
+    public ListResult<NodeResponse> getAllNodeByBattery(HttpServletRequest httpServletRequest,
+                                                        @PathVariable Long id) {
+        Battery battery = batteryService.findByIdCustom(id);
+
+        return responseService.listResult(
+                battery.getNode()
+                        .stream()
+                        .map(Node::toResponse)
+                        .collect(Collectors.toList()));
+    }
+
+    @ApiOperation(value = "노드 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 node의 정보를 반환")
+    @GetMapping("/all")
+    public ListResult<NodeResponse> getAllNode(HttpServletRequest httpServletRequest) {
+        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
+        /**
+         * 페이징을 적용해야할지 의문
+         */
+        return responseService.listResult(
+                nodeService.findAll()
+                        .stream()
+                        .filter(i -> nodeService.chekMemberAuthorityUser(memberId, i.getId()))
+                        .map(Node::toResponse)
+                        .collect(Collectors.toList()));
     }
 }

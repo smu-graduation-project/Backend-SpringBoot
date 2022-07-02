@@ -1,8 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.entity;
 
-import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
-import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @Author : Jeeseob
@@ -45,17 +42,6 @@ public class Site {
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                .gpsXPos(this.gpsXPos)
-                .gpsYPos(this.gpsYPos)
-                .build();
-    }
-
-    public SitePagingResponse toPagingResponse() {
-
-        return SitePagingResponse
-                .builder()
-                .name(this.name)
-                .type(this.type)
                 .gpsXPos(this.gpsXPos)
                 .gpsYPos(this.gpsYPos)
                 .build();

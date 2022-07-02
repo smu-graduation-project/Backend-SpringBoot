@@ -5,10 +5,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
-import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
-import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePageResponse;
-import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePagingResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
@@ -21,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -39,28 +35,12 @@ public class SiteController {
     private final SiteService siteService;
     private final ResponseService responseService;
 
-
-    @ApiOperation(value = "사이트 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 사이트 정보를 반환")
-    @GetMapping("/all")
-    public ListResult<SiteResponse> getAllNode(HttpServletRequest httpServletRequest) {
-        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
-        /**
-         * 페이징을 적용해야할지 의문
-         */
-        return responseService.listResult(
-                siteService.findAll()
-                        .stream()
-                        .filter(i -> siteService.chekMemberAuthorityUser(memberId, i.getId()))
-                        .map(Site::toResponse)
-                        .collect(Collectors.toList()));
-    }
-
     @ApiOperation(value = "사이트 추가", notes = "사이트관련 정보를 받아 Site 추가")
     @PostMapping("/add")
     public CommonResult addSite(HttpServletRequest httpServletRequest,
                                 @RequestBody SiteRequest request) {
 
-        siteService.setSite(request.toEntity());
+        siteService.save(request.toEntity());
         return responseService.successResult();
     }
 
@@ -72,27 +52,45 @@ public class SiteController {
 
         Site site = request.toEntity();
         site.setId(id);
-        siteService.setSite(site);
+        siteService.save(site);
         return responseService.successResult();
     }
 
     @ApiOperation(value = "사이트 정보", notes = "사이트 id를 받아 해당하는 Site 상세정보를 반환")
-    @GetMapping("/{id}")
+    @GetMapping("/detail/{id}")
     public SingleResult<SiteResponse> getSite(HttpServletRequest httpServletRequest,
                                               @PathVariable Long id) {
-        SiteResponse result = siteService.getSiteResponse(id);
-        return responseService.singleResult(result);
+        return responseService.singleResult(siteService.findById(id).toResponse());
     }
 
-    @ApiOperation(value = "Site Paging List", notes = "사이트 정보 List")
+    @ApiOperation(value = "사이트 리스트(member + paging)", notes = "사이트 정보 List")
     @GetMapping("/list/{page}")
-    public ListResult<SitePagingResponse> getSiteList(HttpServletRequest httpServletRequest,
+    public ListResult<SiteResponse> getSiteList(HttpServletRequest httpServletRequest,
                                                       @PathVariable int page) {
-        List<SitePagingResponse> siteList = siteService.getSiteList(page);
-        return responseService.listResult(siteList);
+        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
+
+        return responseService.listResult(
+                siteService.getSiteList(page)
+                        .stream()
+                        .filter(i -> siteService.chekMemberAuthorityUser(memberId, i.getId()))
+                        .map(Site::toResponse)
+                        .collect(Collectors.toList()));
     }
 
-    @ApiOperation(value = "Site Paing Information", notes = "사이트 paging 정보")
+    @ApiOperation(value = "사이트 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 사이트 정보를 반환")
+    @GetMapping("/all")
+    public ListResult<SiteResponse> getAllNode(HttpServletRequest httpServletRequest) {
+        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
+
+        return responseService.listResult(
+                siteService.findAll()
+                        .stream()
+                        .filter(i -> siteService.chekMemberAuthorityUser(memberId, i.getId()))
+                        .map(Site::toResponse)
+                        .collect(Collectors.toList()));
+    }
+
+    @ApiOperation(value = "Site 페이지 정보", notes = "사이트 paging 정보")
     @GetMapping("/paging/{page}")
     public SingleResult<SitePageResponse> getSitePage(HttpServletRequest httpServletRequest,
                                                       @PathVariable int page) {
@@ -107,7 +105,5 @@ public class SiteController {
                 .build();
 
         return responseService.singleResult(response);
-
     }
-
 }
