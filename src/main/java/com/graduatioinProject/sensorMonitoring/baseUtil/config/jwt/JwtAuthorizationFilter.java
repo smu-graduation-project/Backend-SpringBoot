@@ -75,13 +75,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		} catch (CustomJwtException cusJwtExc) {
 			request.setAttribute(JwtProperties.EXCEPTION, cusJwtExc.getMessage());
 		} catch (TokenExpiredException ee) {
-			request.setAttribute(JwtProperties.EXCEPTION, JwtErrorCode.JWT_REFRESH_EXPIRED);
+			request.setAttribute(JwtProperties.EXCEPTION, JwtErrorCode.JWT_REFRESH_EXPIRED.getCode());
 		} catch (MalformedJwtException | UnsupportedJwtException mj) {
-			request.setAttribute(JwtProperties.EXCEPTION, JwtErrorCode.JWT_NOT_VALID);
+			request.setAttribute(JwtProperties.EXCEPTION, JwtErrorCode.JWT_NOT_VALID.getCode());
 		} catch (Exception e) {
 			log.error("미정의 에러 : " + e);
 			log.error(e.getMessage());
-			request.setAttribute(JwtProperties.EXCEPTION, JwtErrorCode.JWT_NOT_VALID);
+			request.setAttribute(JwtProperties.EXCEPTION, JwtErrorCode.JWT_NOT_VALID.getCode());
 		}
 
 		chain.doFilter(request, response);

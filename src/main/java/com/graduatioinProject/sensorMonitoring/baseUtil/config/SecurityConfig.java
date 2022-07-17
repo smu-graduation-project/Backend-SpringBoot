@@ -34,9 +34,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().mvcMatchers(
+				// swagger
+				"/v2/api-docs",
+				"/swagger-resources/**",
+				"/swagger-ui.html",
+				"/webjars/**",
+				"/swagger/**",
+
 				"/image/**",
+				// 회원가입
 				"/api/v1/signup",
-				"/exception"
+				// 관리용 api 허용
+				"/admin/api/**",
+				"/exception/**"
 		); // /image/** 있는 모든 파일들은 시큐리티 적용을 무시한다.
 		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적인 리소스들에 대해서 시큐리티 적용 무시.
 	}
@@ -56,11 +66,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				// TODO : 추가적인 권한 체크 시 여기서 도메인 설정
 				// LOGIN
-				.antMatchers("/api/v1/login/**").permitAll()
-				// MEMBER
-//				.antMatchers("/api/v1/member/**")
-//				.access("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or not hasRole('ROLE_USER')")
-				// ADMIN
+				.antMatchers("/api/v1/login/**")
+				.permitAll()
+				// 모든 요청은 ROLE_USER 이상
+				.antMatchers("/api/v1/**")
+				// .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+				.permitAll() // 임시 허용
+				// 관리자 권한 요청 ROLE_ADMIN
 				.antMatchers("/api/v1/admin/**")
 				.access("hasRole('ROLE_ADMIN')")
 				.anyRequest().permitAll() // 그 외 모든 요청에 대해서 허용하라.
