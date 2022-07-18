@@ -1,13 +1,16 @@
 package com.graduatioinProject.sensorMonitoring.member.entity;
 
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
+import com.graduatioinProject.sensorMonitoring.member.dto.MemberResWithSite;
 import com.graduatioinProject.sensorMonitoring.member.dto.Role;
+import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Entity
@@ -56,6 +59,9 @@ public class Member {
 	@Column
 	private String activateYn;			// 활성화 여부
 
+	@OneToMany(targetEntity = Site.class, fetch = FetchType.LAZY)
+	private List<Site> sites;			// site 접근 권한
+
 	public List<String> getRoleList() {
 		ArrayList<String> roles = new ArrayList<>();
 		roles.add(role.getName());
@@ -74,6 +80,22 @@ public class Member {
 				.createDate(createDate)
 				.updateDate(updateDate)
 				.activateYn(activateYn)
+				.build();
+	}
+
+	public MemberResWithSite toDtoWithSite() {
+		return MemberResWithSite.builder()
+				.userSeq(seq)
+				.username(username)
+				.role(role.getName())
+				.employeeNumber(employeeNumber)
+				.phoneNumber(phoneNumber)
+				.realname(realname)
+				.signupType(signupType)
+				.createDate(createDate)
+				.updateDate(updateDate)
+				.activateYn(activateYn)
+				.siteResponses(sites.stream().map(Site::toResponse).collect(Collectors.toList()))
 				.build();
 	}
 }

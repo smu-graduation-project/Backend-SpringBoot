@@ -9,16 +9,12 @@ import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryRe
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
-import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
-import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.site.service.SiteService;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,31 +39,33 @@ public class BatteryController {
     private final SiteService siteService;
     private final ResponseService responseService;
 
-    @ApiOperation(value = "배터리 이미지 추가", notes = "배터리 임미지 추가")
-    @PostMapping("/upload/image/{id}")
-    // https://kim-jong-hyun.tistory.com/78?category=910543 나중에 AWS에 올리면, S3로 변경
-    public CommonResult setBattery(HttpServletRequest httpServletRequest,
-                                   @PathVariable Long id,
-                                   @RequestParam("image") MultipartFile image) {
+//    @ApiOperation(value = "배터리 이미지 추가", notes = "배터리 임미지 추가")
+//    @PostMapping("/upload/image/{id}")
+//    // https://kim-jong-hyun.tistory.com/78?category=910543 나중에 AWS에 올리면, S3로 변경
+//    public CommonResult setBattery(HttpServletRequest httpServletRequest,
+//                                   @PathVariable Long id,
+//                                   @RequestParam("image") MultipartFile image) {
+//
+//        batteryService.uploadImage(image, id);
+//        return responseService.successResult();
+//    }
 
-        batteryService.uploadImage(image, id);
-        return responseService.successResult();
-    }
     @ApiOperation(value = "배터리 추가", notes = "배터리 데이터 추가")
     @PostMapping("/add")
     public CommonResult addBattery(HttpServletRequest httpServletRequest,
-                                   @RequestBody BatteryRequest request) {
-        batteryService.setBattery(request.toEntity());
+                                   @RequestBody BatteryRequest batteryRequest,
+                                   @RequestParam Long siteId) {
+        batteryService.save(batteryRequest, siteId);
         return responseService.successResult();
     }
-
-    @ApiOperation(value = "배터리 이미지 상세", notes = "배터리 이미지 url")
-    @GetMapping("/image/{id}")
-    public UrlResource getImage(HttpServletRequest httpServletRequest,
-                                @PathVariable Long id) throws MalformedURLException {
-        String imgaeUrl = batteryService.findById(id).getImageUrl();
-        return new UrlResource("file:" + imgaeUrl);
-    }
+//
+//    @ApiOperation(value = "배터리 이미지 상세", notes = "배터리 이미지 url")
+//    @GetMapping("/image/{id}")
+//    public UrlResource getImage(HttpServletRequest httpServletRequest,
+//                                @PathVariable Long id) throws MalformedURLException {
+//        String imgaeUrl = batteryService.findById(id).getImageUrl();
+//        return new UrlResource("file:" + imgaeUrl);
+//    }
 
     @ApiOperation(value = "배터리 상세정보", notes = "배터리 id를 받아 해당하는 배터리 정보를 반환")
     @GetMapping("/detail/{id}")
@@ -84,11 +82,11 @@ public class BatteryController {
         /**
          * 페이징을 적용해야할지 의문
          */
-        List<Battery> batteryList = siteService.findByIdWithBattery(id).getBattery();
+        List<Battery> batteryList = siteService.findByIdWithBattery(id).getBatteries();
         return responseService.listResult(
                 batteryService.findAll()
                         .stream()
-                        .filter(i -> batteryList.contains(i))
+                        .filter(batteryList::contains)
                         .map(Battery::toResponse)
                         .collect(Collectors.toList()));
     }
@@ -96,14 +94,14 @@ public class BatteryController {
     @ApiOperation(value = "배터리 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 배터리 정보를 반환")
     @GetMapping("/all")
     public ListResult<BatteryResponse> getAllNode(HttpServletRequest httpServletRequest) {
-        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
+        String userName = httpServletRequest.getHeader(JwtProperties.USERNAME);
         /**
          * 페이징을 적용해야할지 의문
          */
         return responseService.listResult(
                 batteryService.findAll()
                         .stream()
-                        .filter(i -> batteryService.chekMemberAuthorityUser(memberId, i.getId()))
+                        .filter(i -> batteryService.chekMemberAuthorityUser(userName, i.getId()))
                         .map(Battery::toResponse)
                         .collect(Collectors.toList()));
     }

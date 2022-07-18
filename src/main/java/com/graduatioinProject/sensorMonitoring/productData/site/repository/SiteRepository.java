@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.repository;
 
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

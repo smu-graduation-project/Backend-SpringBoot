@@ -4,14 +4,14 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessExcep
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
+import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeUpdateRequest;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.repository.NodeRepository;
 import com.graduatioinProject.sensorMonitoring.productData.node.repository.NodeRepositoryCustom;
-import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,27 +34,30 @@ public class NodeService {
                 .orElseThrow(() -> new BussinessException(ExMessage.NODE_ERROR_NOT_FOUND.getMessage()));
     }
 
-    public Long save(Node node) {
-        nodeRepository.save(node);
-        return node.getId();
+    public void save(NodeUpdateRequest nodeUpdateRequest) {
+        nodeRepository.save(nodeUpdateRequest.toEntity());
+    }
+
+    public void saveNew(Long port) {
+        nodeRepository.save(Node.builder().port(port).build());
     }
 
     public Boolean checkNode(Long id) {
         return nodeRepository.findById(id).isPresent();
     }
 
-    public Boolean chekMemberAuthorityUser(Long memberId, Long nodeId) {
-        Site site = nodeRepositoryCustom.findByIdMemberRole(nodeId).getBattery().getSite();
-
-//        Member member = memberService.findById(memberId);
-//        return member.getSites().contains(site);
-
-        // 임시
-        return true;
+    public Boolean chekMemberAuthorityUser(String userName, Long nodeId) {
+        SiteResponse siteResponse = nodeRepositoryCustom.findByIdSite(nodeId).getBatteryWithSite().getSiteResponse();
+        List<Long> siteIdList = memberService.findByUserNameWithSiteIdList(userName);
+        return siteIdList.contains(siteResponse.getId());
     }
 
     public List<Node> findAll(){
         return nodeRepository.findAll();
     }
 
+
+    public void delete(Long id) {
+        nodeRepository.deleteById(id);
+    }
 }

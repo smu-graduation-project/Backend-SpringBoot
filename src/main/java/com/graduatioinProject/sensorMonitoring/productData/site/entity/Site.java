@@ -2,13 +2,12 @@ package com.graduatioinProject.sensorMonitoring.productData.site.entity;
 
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author : Jeeseob
@@ -16,9 +15,11 @@ import java.util.List;
  */
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class Site {
     @Id
@@ -33,12 +34,18 @@ public class Site {
     private double gpsYPos;
 
     @OneToMany(targetEntity = Battery.class, fetch = FetchType.LAZY)
-    private List<Battery> battery;
+    @ToString.Exclude
+    private List<Battery> batteries;
+
+
+    public void addBattery(Battery battery) {
+        battery.setSite(this);
+        this.batteries.add(battery);
+    }
 
     public SiteResponse toResponse() {
-
-        return SiteResponse
-                .builder()
+        return SiteResponse.builder()
+                .id(this.id)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)

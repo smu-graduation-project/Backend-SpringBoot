@@ -7,12 +7,12 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
-import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryWithNode;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
+import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeUpdateRequest;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.service.NodeService;
-import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeUpdateRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -33,15 +33,15 @@ public class NodeController {
 
     @ApiOperation(value = "노드 추가", notes = "노드 관련 정보를 받아 노드를 추가(프론트에서 처리 X)")
     @PostMapping("/add/{port}")
-    public SingleResult<String> setNodeDetail(@PathVariable Long port){
+    public CommonResult setNodeDetail(@PathVariable Long port){
         /**
          * 노드 정보는 자동으로 추가되도록 하고,
          * 이를 수정하는 것을 직접 하도록 설정하는 것은 어떤지??
          * 그렇게 하려면, 특정 IP만 가능하도록 설정하거나, 따로 암호화된 키를 가져야 할 것 같음.
          */
         try {
-            Long id = nodeService.save(Node.builder().port(port).build());
-            return responseService.singleResult(String.valueOf(id));
+            nodeService.saveNew(port);
+            return responseService.successResult();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +66,7 @@ public class NodeController {
     @ApiOperation(value = "노드 수정", notes = "노드 관련 정보를 받아 노드정보를 수정합니다.")
     @PutMapping("/update/{id}")
     public CommonResult setNodeDetail( HttpServletRequest httpServletRequest,
-                                       @RequestBody NodeUpdateRequest request,
+                                       @RequestBody NodeUpdateRequest nodeUpdateRequest,
                                        @PathVariable Long id) {
 
         if (!nodeService.checkNode(id)) {
@@ -74,42 +74,42 @@ public class NodeController {
         }
 
         try {
-            batteryService.findById(request.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
-            nodeService.save(request.toEntity());
+            batteryService.findById(nodeUpdateRequest.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
+            nodeService.save(nodeUpdateRequest);
             return responseService.successResult();
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new BussinessException(e.getMessage());
         }
     }
 
-
     @ApiOperation(value = "노드 리스트(batteryId)", notes = "해당 배터리와 연결된 모든 node의 정보를 반환")
-    @GetMapping("battery/{id}/list")
+    @GetMapping("battery/list/{id}")
     public ListResult<NodeResponse> getAllNodeByBattery(HttpServletRequest httpServletRequest,
                                                         @PathVariable Long id) {
-        Battery battery = batteryService.findByIdCustom(id);
-
-        return responseService.listResult(
-                battery.getNode()
-                        .stream()
-                        .map(Node::toResponse)
-                        .collect(Collectors.toList()));
+        BatteryWithNode batteryResponseWithNode = batteryService.findByIdWithNode(id);
+        return responseService.listResult(batteryResponseWithNode.getNodeResponses());
     }
 
     @ApiOperation(value = "노드 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 node의 정보를 반환")
     @GetMapping("/all")
     public ListResult<NodeResponse> getAllNode(HttpServletRequest httpServletRequest) {
-        Long memberId = Long.valueOf(httpServletRequest.getHeader(JwtProperties.ID));
+        String userName = httpServletRequest.getHeader(JwtProperties.USERNAME);
         /**
          * 페이징을 적용해야할지 의문
          */
         return responseService.listResult(
                 nodeService.findAll()
                         .stream()
-                        .filter(i -> nodeService.chekMemberAuthorityUser(memberId, i.getId()))
+                        .filter(i -> nodeService.chekMemberAuthorityUser(userName, i.getId()))
                         .map(Node::toResponse)
                         .collect(Collectors.toList()));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResult delteNode(HttpServletRequest httpServletRequest,
+                                   @PathVariable Long id) {
+        nodeService.delete(id);
+        return responseService.successResult();
     }
 }

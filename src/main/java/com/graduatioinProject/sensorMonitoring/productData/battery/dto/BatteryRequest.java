@@ -1,6 +1,7 @@
 package com.graduatioinProject.sensorMonitoring.productData.battery.dto;
 
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 
 @Data
+@Builder
 public class BatteryRequest {
     private String name;
     private String type;

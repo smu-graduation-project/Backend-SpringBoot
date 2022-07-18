@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.baseUtil.annotation;
+package com.graduatioinProject.sensorMonitoring.baseUtil.config.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

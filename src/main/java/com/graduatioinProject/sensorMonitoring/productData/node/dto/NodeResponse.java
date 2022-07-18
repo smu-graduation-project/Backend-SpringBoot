@@ -18,9 +18,9 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @Data
 public class NodeResponse {
+    private Long id;
     private Long port;
     private String name;
     private String type;
-
     private String information;
 }

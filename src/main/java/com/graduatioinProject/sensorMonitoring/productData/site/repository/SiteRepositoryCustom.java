@@ -26,10 +26,11 @@ public class SiteRepositoryCustom {
 
         return jpaQueryFactory
                 .selectFrom(qSite)
-                .join(qBattery).fetchJoin()
+                .join(qSite.batteries).fetchJoin()
                 .where(qSite.id.eq(id))
                 .fetchOne();
     }
+
     public Site findByIdWithMember(Long id) {
         QSite qSite = QSite.site;
         return jpaQueryFactory

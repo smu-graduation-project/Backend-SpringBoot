@@ -1,8 +1,9 @@
 package com.graduatioinProject.sensorMonitoring.productData.battery.repository;
 
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryWithNode;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryWithSite;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.QBattery;
-import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.QNode;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.QSite;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,18 +20,21 @@ import org.springframework.stereotype.Repository;
 public class BatteryRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Battery findByIdWithNode(Long id) {
+    public BatteryWithNode findByIdWithNode(Long id) {
         QBattery qBattery = QBattery.battery;
         QNode qNode = QNode.node;
 
-        return jpaQueryFactory
+        Battery battery = jpaQueryFactory
                 .selectFrom(qBattery)
                 .join(qBattery.node, qNode).fetchJoin()
                 .where(qBattery.id.eq(id))
                 .fetchOne();
+
+        assert battery != null;
+        return battery.toResponseWithNode();
     }
 
-    public Battery findByIdWithMember(Long id) {
+    public Battery findByIdWithSite(Long id) {
         QBattery qBattery = QBattery.battery;
         QSite qSite = QSite.site;
         return jpaQueryFactory
@@ -38,5 +42,6 @@ public class BatteryRepositoryCustom {
                 .join(qBattery.site, qSite).fetchJoin()
                 .where(qBattery.id.eq(id))
                 .fetchOne();
+
     }
 }

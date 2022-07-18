@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.baseUtil.Aop;
+package com.graduatioinProject.sensorMonitoring.baseUtil.config.Aop;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
@@ -52,8 +52,8 @@ class CheckMemberAuthority {
             }
         }
 
-        Long memberId = Long.valueOf(request.getHeader(JwtProperties.ID));
-        //siteService.chekMemberAuthorityUser(memberId, siteId);
+        String memberId = request.getHeader(JwtProperties.USERNAME);
+        siteService.chekMemberAuthorityUser(memberId, siteId);
     }
 
     @Before("@annotation(AuthorityCheckUser)")
@@ -72,8 +72,8 @@ class CheckMemberAuthority {
             }
         }
 
-        Long memberId = Long.valueOf(request.getHeader(JwtProperties.ID));
-        //batteryService.chekMemberAuthorityUser(memberId, batteryId);
+        String memberId  = request.getHeader(JwtProperties.ID);
+        batteryService.chekMemberAuthorityUser(memberId, batteryId);
     }
 
     @Before("@annotation(AuthorityCheckUser)")
@@ -93,7 +93,7 @@ class CheckMemberAuthority {
             }
         }
 
-        Long memberId = Long.valueOf(request.getHeader(JwtProperties.ID));
+        String memberId = request.getHeader(JwtProperties.ID);
         if (!nodeService.chekMemberAuthorityUser(memberId, nodeId)) {
             throw new BussinessException("Authority Error");
         }

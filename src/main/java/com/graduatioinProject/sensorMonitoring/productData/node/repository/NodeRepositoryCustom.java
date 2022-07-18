@@ -1,6 +1,7 @@
 package com.graduatioinProject.sensorMonitoring.productData.node.repository;
 
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.QBattery;
+import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeWithBattery;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.QNode;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.QSite;
@@ -18,16 +19,19 @@ import org.springframework.stereotype.Repository;
 public class NodeRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Node findByIdMemberRole(Long id) {
+    public NodeWithBattery findByIdSite(Long id) {
         QBattery qBattery = QBattery.battery;
         QNode qNode = QNode.node;
         QSite qSite = QSite.site;
-        return jpaQueryFactory
+        Node node = jpaQueryFactory
                 .selectFrom(qNode)
                 .join(qNode.battery, qBattery).fetchJoin()
                 .join(qBattery.site, qSite).fetchJoin()
                 .where(qNode.id.eq(id))
                 .fetchOne();
+
+        assert node != null;
+        return node.toResponseWithBattery();
     }
 
     public Node findByIdBattery(Long id) {
