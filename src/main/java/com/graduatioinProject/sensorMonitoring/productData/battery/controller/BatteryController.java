@@ -8,6 +8,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryRequest;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
+import com.graduatioinProject.sensorMonitoring.productData.battery.service.AwsS3Service;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.site.service.SiteService;
 import io.swagger.annotations.Api;
@@ -15,9 +16,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +36,7 @@ public class BatteryController {
     private final BatteryService batteryService;
     private final SiteService siteService;
     private final ResponseService responseService;
+    private final AwsS3Service awsS3Service;
 
     @ApiOperation(value = "배터리 추가", notes = "배터리 데이터 추가")
     @PostMapping("/add")
@@ -55,25 +57,17 @@ public class BatteryController {
         return responseService.successResult();
     }
 
-//    @ApiOperation(value = "배터리 이미지 추가", notes = "배터리 임미지 추가")
-//    @PostMapping("/upload/image/{id}")
-//    // https://kim-jong-hyun.tistory.com/78?category=910543 나중에 AWS에 올리면, S3로 변경
-//    public CommonResult setBattery(HttpServletRequest httpServletRequest,
-//                                   @PathVariable Long id,
-//                                   @RequestParam("image") MultipartFile image) {
-//
-//        batteryService.uploadImage(image, id);
-//        return responseService.successResult();
+    @ApiOperation(value = "배터리 이미지 추가", notes = "배터리 이미지 추가")
+    @PostMapping("/upload/image/{batteryId}")
+    public CommonResult setBattery(HttpServletRequest httpServletRequest,
+                                   @PathVariable Long batteryId,
+                                   @RequestParam("image") MultipartFile image) {
 
-//    }
-//
-//    @ApiOperation(value = "배터리 이미지 상세", notes = "배터리 이미지 url")
-//    @GetMapping("/image/{id}")
-//    public UrlResource getImage(HttpServletRequest httpServletRequest,
-//                                @PathVariable Long id) throws MalformedURLException {
-//        String imgaeUrl = batteryService.findById(id).getImageUrl();
-//        return new UrlResource("file:" + imgaeUrl);
-//    }
+        String imgUrl = awsS3Service.uploadFileV1(image);
+        batteryService.addImage(imgUrl, batteryId);
+        return responseService.successResult();
+
+    }
 
     @ApiOperation(value = "배터리 상세정보", notes = "배터리 id를 받아 해당하는 배터리 정보를 반환")
     @GetMapping("/detail/{id}")

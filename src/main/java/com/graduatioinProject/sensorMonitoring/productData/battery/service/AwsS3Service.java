@@ -7,8 +7,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.graduatioinProject.sensorMonitoring.baseUtil.awsS3.CommonUtils;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,10 +30,10 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String uploadFileV1(String category, MultipartFile multipartFile) {
+    public String uploadFileV1(MultipartFile multipartFile) {
         validateFileExists(multipartFile);
 
-        String fileName = CommonUtils.buildFileName(category, multipartFile.getOriginalFilename());
+        String fileName = CommonUtils.buildFileName(multipartFile.getOriginalFilename());
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
