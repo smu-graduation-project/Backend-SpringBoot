@@ -7,10 +7,11 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
-import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryWithNode;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithNode;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
-import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeUpdateRequest;
+import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeRequest;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.service.NodeService;
 import io.swagger.annotations.Api;
@@ -40,54 +41,47 @@ public class NodeController {
          * 그렇게 하려면, 특정 IP만 가능하도록 설정하거나, 따로 암호화된 키를 가져야 할 것 같음.
          */
         try {
-            nodeService.saveNew(port);
+            nodeService.save(port);
             return responseService.successResult();
 
         } catch (Exception e) {
             e.printStackTrace();
             throw new BussinessException(e.getMessage());
         }
+    }
+
+    @ApiOperation(value = "노드 수정", notes = "노드 관련 정보를 받아 노드정보를 수정합니다.")
+    @PutMapping("/update/{batteryId}/{nodeId}")
+    public CommonResult setNodeDetail( HttpServletRequest httpServletRequest,
+                                       @RequestBody NodeRequest nodeUpdateRequest,
+                                       @PathVariable Long batteryId,
+                                       @PathVariable Long nodeId) {
+
+//        if (!nodeService.checkNode(batteryId)) {
+//            return responseService.failResult(ExMessage.NODE_ERROR_NOT_FOUND.getMessage());
+//        }
+        nodeService.update(nodeUpdateRequest, batteryId, nodeId);
+        return responseService.successResult();
     }
 
     @ApiOperation(value = "노드 상세정보", notes = "노드 id를 받아 해당하는 노드의 상세정보를 반환")
     @GetMapping("/detail/{id}")
     public SingleResult<NodeResponse> getNodeDetail(HttpServletRequest httpServletRequest,
                                                     @PathVariable Long id) {
-        NodeResponse response = nodeService.findByIdResponse(id);
         try {
-            return responseService.singleResult(response);
+            return responseService.singleResult(nodeService.findByIdResponse(id));
         } catch (Exception e) {
             e.printStackTrace();
             throw new BussinessException(e.getMessage());
         }
 
-    }
-
-    @ApiOperation(value = "노드 수정", notes = "노드 관련 정보를 받아 노드정보를 수정합니다.")
-    @PutMapping("/update/{id}")
-    public CommonResult setNodeDetail( HttpServletRequest httpServletRequest,
-                                       @RequestBody NodeUpdateRequest nodeUpdateRequest,
-                                       @PathVariable Long id) {
-
-        if (!nodeService.checkNode(id)) {
-            return responseService.failResult(ExMessage.NODE_ERROR_NOT_FOUND.getMessage());
-        }
-
-        try {
-            batteryService.findById(nodeUpdateRequest.getBatteryId()); // 해당하는 배터리가 없다면 service단에서 에러메세지
-            nodeService.save(nodeUpdateRequest);
-            return responseService.successResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BussinessException(e.getMessage());
-        }
     }
 
     @ApiOperation(value = "노드 리스트(batteryId)", notes = "해당 배터리와 연결된 모든 node의 정보를 반환")
-    @GetMapping("battery/list/{id}")
+    @GetMapping("list/{batteryId}")
     public ListResult<NodeResponse> getAllNodeByBattery(HttpServletRequest httpServletRequest,
-                                                        @PathVariable Long id) {
-        BatteryWithNode batteryResponseWithNode = batteryService.findByIdWithNode(id);
+                                                        @PathVariable Long batteryId) {
+        BatteryResponseWithNode batteryResponseWithNode = batteryService.findByIdWithNode(batteryId);
         return responseService.listResult(batteryResponseWithNode.getNodeResponses());
     }
 

@@ -1,16 +1,16 @@
 package com.graduatioinProject.sensorMonitoring.productData.battery.entity;
 
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
-import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryWithNode;
-import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryWithSite;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithAll;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithNode;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithSite;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -34,20 +34,28 @@ public class Battery {
     private String type;
     private String information;
 
-    private String imageName;
+    private String imageUrl;
 //    private String imageUrl;
 //    private long image_size;
 
-    @ManyToOne(targetEntity = Site.class, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "site_id")
     private Site site;
 
-    @OneToMany(targetEntity = Node.class, fetch = FetchType.LAZY)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "battery")
     private List<Node> node;
 
+    public void addNode(Node addNode) {
+        if (this.node == null) {
+            this.node = new ArrayList<>();
+        }
+        this.node.add(addNode);
+        addNode.setBattery(this);
+    }
 
     public BatteryResponse toResponse() {
         return BatteryResponse.builder()
-                .id(this.id)
+                .id(id)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
@@ -55,21 +63,19 @@ public class Battery {
                 .build();
     }
 
-    public BatteryWithNode toResponseWithNode() {
-        return BatteryWithNode.builder()
+    public BatteryResponseWithNode toResponseWithNode() {
+        return BatteryResponseWithNode.builder()
                 .id(this.id)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
                 // .imageUrl(this.imageUrl)
-                .nodeResponses(this.node.stream()
-                        .map(Node::toResponse)
-                        .collect(Collectors.toList()))
+                .nodeResponses(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
                 .build();
     }
 
-    public BatteryWithSite toResponseWithSite() {
-        return BatteryWithSite.builder()
+    public BatteryResponseWithSite toResponseWithSite() {
+        return BatteryResponseWithSite.builder()
                 .id(this.id)
                 .name(this.name)
                 .type(this.type)
@@ -78,4 +84,17 @@ public class Battery {
                 .siteResponse(this.site.toResponse())
                 .build();
     }
+
+    public BatteryResponseWithAll toResponseWithAll() {
+        return BatteryResponseWithAll.builder()
+                .id(this.id)
+                .name(this.name)
+                .type(this.type)
+                .information(this.information)
+                // .imageUrl(this.imageUrl)
+                .nodeResponses(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
+                .siteResponse(this.site.toResponse())
+                .build();
+    }
 }
+

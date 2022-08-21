@@ -4,6 +4,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SitePageResponse;
@@ -48,12 +49,12 @@ public class SiteController {
     }
 
     @ApiOperation(value = "사이트 수정", notes = "사이트관련 정보를 받아 Site 수정")
-    @PutMapping("/update/{id}")
+    @PutMapping("/update/{siteId}")
     public CommonResult updateSite(HttpServletRequest httpServletRequest,
-                                   @PathVariable Long id,
+                                   @PathVariable Long siteId,
                                    @RequestBody SiteRequest request) {
 
-        siteService.update(request, id);
+        siteService.update(request, siteId);
         return responseService.successResult();
     }
 
@@ -67,8 +68,9 @@ public class SiteController {
     @ApiOperation(value = "사이트 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 사이트 정보를 반환")
     @GetMapping("/all")
     public ListResult<SiteResponse> getAllNode(HttpServletRequest httpServletRequest) {
-        return responseService.listResult(
-                memberService.findByUserNameSiteList(
-                        httpServletRequest.getHeader(JwtProperties.USERNAME)));
+        return responseService.listResult(siteService.findAll());
+//        return responseService.listResult(
+//                memberService.findByUserNameSiteList(
+//                        httpServletRequest.getHeader(JwtProperties.USERNAME)));
     }
 }

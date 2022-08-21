@@ -14,18 +14,15 @@ public class SiteRequest {
     private String type;
     private String information;
 
-    private double gpsXPos;
-    private double gpsYPos;
+    private String address;
 
     public Site toEntity() {
-
         return Site
                 .builder()
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                .gpsXPos(this.gpsXPos)
-                .gpsYPos(this.gpsYPos)
+                .address(this.address)
                 .build();
     }
 }

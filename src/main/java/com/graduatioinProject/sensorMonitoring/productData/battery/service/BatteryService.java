@@ -4,7 +4,8 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessExcep
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryRequest;
-import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryWithNode;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithNode;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.repository.BatteryRepository;
 import com.graduatioinProject.sensorMonitoring.productData.battery.repository.BatteryRepositoryCustom;
@@ -14,12 +15,10 @@ import com.graduatioinProject.sensorMonitoring.productData.site.service.SiteServ
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @Author : Jeeseob
@@ -42,38 +41,40 @@ public class BatteryService {
         return batteryRepository.findAll();
     }
 
-    public Battery findById(Long id) {
+    public BatteryResponse findById(Long id) {
         Optional<Battery> response = batteryRepository.findById(id);
         if (response.isPresent()) {
-            return response.get();
+            return response.get().toResponse();
         }
         throw (new BussinessException(ExMessage.BATTERY_ERROR_NOT_FOUND.getMessage()));
     }
 
-    public BatteryWithNode findByIdWithNode(Long id) {
+    public BatteryResponseWithNode findByIdWithNode(Long id) {
         return batteryRepositoryCustom.findByIdWithNode(id);
     }
 
-    public Battery findByIdWithSite(Long id) {
-        return batteryRepositoryCustom.findByIdWithSite(id);
-    }
-
+//    public Battery findByIdWithSite(Long id) {
+//        return batteryRepositoryCustom.findByIdWithSite(id);
+//    }
+    @Transactional(rollbackFor = Exception.class)
     public void save(BatteryRequest batteryRequest, Long siteId) {
-        Battery battery = batteryRepository.save(batteryRequest.toEntity());
-        log.info("test1");
-
-        Site site = siteService.findByIdWithBattery(siteId);
-        log.info("test2");
-        log.info(site.getName());
-
-        //site.addBattery(battery);
-        log.info("test3");
-
-        //siteService.save(site);
-        log.info("test4");
-        batteryRepository.save(battery);
+        Battery battery = batteryRequest.toEntity();
+        battery.setSite(Site.builder().id(siteId).build());
+        this.save(battery);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void update(BatteryRequest batteryRequest, Long siteId, Long batteryId) {
+        Battery battery = batteryRequest.toEntity();
+        battery.setId(batteryId);
+        battery.setSite(Site.builder().id(siteId).build());
+        this.save(battery);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void save(Battery battery) {
+        Battery newBattery = batteryRepository.save(battery);
+    }
 //    public void uploadImage(MultipartFile image, Long id) {
 //        try {
 //            String imagePath = "resources/static/upload/image/battery/";
@@ -94,7 +95,7 @@ public class BatteryService {
 
 
     public Boolean chekMemberAuthorityUser(String userName, Long batteryId) {
-        SiteResponse siteResponse = batteryRepositoryCustom.findByIdWithSite(batteryId).getSite().toResponse();
+        SiteResponse siteResponse = batteryRepository.findById(batteryId).orElseThrow().getSite().toResponse();
         List<Long> siteIdList = memberService.findByUserNameWithSiteIdList(userName);
         return siteIdList.contains(siteResponse.getId());
     }

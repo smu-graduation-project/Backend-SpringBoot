@@ -5,6 +5,7 @@ import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponseWithBattery;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import com.graduatioinProject.sensorMonitoring.productData.site.repository.SiteRepository;
 import com.graduatioinProject.sensorMonitoring.productData.site.repository.SiteRepositoryCustom;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,13 +33,8 @@ public class SiteService {
     private final MemberService memberService;
     private final SiteRepositoryCustom siteRepositoryCustom;
 
-    public List<Site> findAll() {
-        return siteRepository.findAll();
-    }
-
-    public Site findByIdOrigin(Long id) {
-        return siteRepository.findById(id)
-                .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()));
+    public List<SiteResponse> findAll() {
+        return siteRepository.findAll().stream().map(Site::toResponse).collect(Collectors.toList());
     }
 
     public SiteResponse findById(Long id) {
@@ -46,19 +43,17 @@ public class SiteService {
                 .toResponse();
     }
 
-    public Site findByIdWithBattery(Long id) {
+    public SiteResponseWithBattery findByIdWithBattery(Long id) {
         return siteRepositoryCustom.findByIdWithBattery(id);
     }
 
-    public void save(Site site) {
-        siteRepository.save(site);
-    }
-
+    @Transactional(rollbackFor = Exception.class)
     public void save(SiteRequest siteRequest) {
         Site site = siteRequest.toEntity();
         siteRepository.save(site);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void update(SiteRequest siteRequest, Long id) {
         this.findById(id); // 해당 id가 존재하는지 확인
         siteRepository.save(siteRequest.toEntity());
@@ -68,8 +63,7 @@ public class SiteService {
         site.setName(siteRequest.getName());
         site.setType(siteRequest.getType());
         site.setInformation(siteRequest.getInformation());
-        site.setGpsXPos(siteRequest.getGpsXPos());
-        site.setGpsYPos(siteRequest.getGpsYPos());
+        site.setAddress(siteRequest.getAddress());
     }
 
     public Page<Site> getSitePage(int page) {

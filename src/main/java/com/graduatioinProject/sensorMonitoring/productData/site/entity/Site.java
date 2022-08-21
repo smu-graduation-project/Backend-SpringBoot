@@ -2,12 +2,13 @@ package com.graduatioinProject.sensorMonitoring.productData.site.entity;
 
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponseWithBattery;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Author : Jeeseob
@@ -29,28 +30,41 @@ public class Site {
     private String name;
     private String type;
     private String information;
+    private String address;
 
-    private double gpsXPos;
-    private double gpsYPos;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "site")
+    private List<Battery>battery;
 
-    @OneToMany(targetEntity = Battery.class, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private List<Battery> batteries;
+    /**
+     * Member와 Many to Many 관계 추가
+     *
+     */
 
-
-    public void addBattery(Battery battery) {
-        battery.setSite(this);
-        this.batteries.add(battery);
+    public void addBattery(Battery addBattery) {
+        if (this.battery == null) {
+            this.battery = new ArrayList<>();
+        }
+        this.battery.add(addBattery);
+        addBattery.setSite(this);
     }
-
     public SiteResponse toResponse() {
         return SiteResponse.builder()
                 .id(this.id)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                .gpsXPos(this.gpsXPos)
-                .gpsYPos(this.gpsYPos)
+                .address(this.address)
+                .build();
+    }
+
+    public SiteResponseWithBattery toResponseWithBattery() {
+        return SiteResponseWithBattery.builder()
+                .id(this.id)
+                .name(this.name)
+                .type(this.type)
+                .information(this.information)
+                .address(this.address)
+                .batteryResponse(this.battery.stream().map(Battery::toResponse).collect(Collectors.toList()))
                 .build();
     }
 }

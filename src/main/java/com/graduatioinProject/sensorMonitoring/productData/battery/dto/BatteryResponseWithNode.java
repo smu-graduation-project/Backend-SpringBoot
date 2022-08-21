@@ -11,18 +11,20 @@ import java.util.stream.Collectors;
 
 /**
  * @Author : Jeeseob
- * @CreateAt : 2022/07/01
+ * @CreateAt : 2022/08/21
  */
 
 @Data
 @Builder
-public class BatteryResponse {
+public class BatteryResponseWithNode {
     private Long id;
+
     private String name;
     private String type;
     private String information;
 
     private String imageUrl;
+    private List<NodeResponse> nodeResponses;
 
     public Battery toEntity() {
         return Battery.builder()
@@ -31,6 +33,7 @@ public class BatteryResponse {
                 .type(this.type)
                 .information(this.information)
                 .imageUrl(this.imageUrl)
+                .node(this.nodeResponses.stream().map(NodeResponse::toEntity).collect(Collectors.toList()))
                 .build();
     }
 }

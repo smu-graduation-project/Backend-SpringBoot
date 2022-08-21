@@ -1,29 +1,26 @@
 package com.graduatioinProject.sensorMonitoring.productData.node.dto;
 
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
-import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-
 /**
  * @Author : Jeeseob
- * @CreateAt : 2022/05/11
+ * @CreateAt : 2022/08/21
  */
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class NodeResponse {
+public class NodeResponseWithBattery {
     private Long id;
     private String name;
     private String type;
     private String information;
+    private BatteryResponse batteryResponse;
 
     public Node toEntity() {
         return Node.builder()
@@ -31,7 +28,8 @@ public class NodeResponse {
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
+                .battery(this.batteryResponse.toEntity())
                 .build();
     }
-
 }
+
