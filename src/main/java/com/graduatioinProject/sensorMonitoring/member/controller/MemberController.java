@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "01. 회원")
+@Api(tags = "01. 회원 관리")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/member")
+@RequestMapping("/admin/api/v1/member")
 public class MemberController {
 
     private final ResponseService responseService;

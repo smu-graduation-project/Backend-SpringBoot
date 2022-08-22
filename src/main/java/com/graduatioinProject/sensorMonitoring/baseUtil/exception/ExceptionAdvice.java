@@ -18,18 +18,33 @@ public class ExceptionAdvice {
 
 	private final ResponseService responseService;
 
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public CommonResult undefinedExceptionHandler(HttpServletRequest request, Exception e) {
-		log.error("\n\n미정의 에러");
-		log.error(e.getMessage() + "\n\n");
-		return responseService.failResult(e.getMessage());
-	}
+//	@ExceptionHandler(Exception.class)
+//	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//	public CommonResult undefinedExceptionHandler(HttpServletRequest request, Exception e) {
+//		String exception = request.getHeader("exception");
+//
+//		log.error("Exception : " + exception);
+//		log.error("미정의 에러");
+//		log.error(e.getMessage() + "\n\n");
+//		return responseService.failResult(e.getMessage());
+//	}
 
 	@ExceptionHandler(BussinessException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public CommonResult bussinessExceptionHandler(HttpServletRequest request, Exception e) {
-		log.error("\n\n" + e.getMessage() + "\n\n");
+		log.error("\n==========================================================================================\n"
+				+ e.getMessage()
+				+ "\n==========================================================================================");
 		return responseService.failResult(e.getMessage());
 	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(value = HttpStatus.FORBIDDEN)
+	public CommonResult accessDeniedExceptionHandler(HttpServletRequest request, Exception e) {
+		log.error("\n==========================================================================================\n"
+				+ e.getMessage()
+				+ "\n==========================================================================================");
+		return responseService.failResult(e.getMessage());
+	}
+
 }

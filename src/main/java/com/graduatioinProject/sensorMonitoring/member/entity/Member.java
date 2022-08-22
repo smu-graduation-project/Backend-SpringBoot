@@ -44,7 +44,7 @@ public class Member {
 	private String refreshToken;		// 리프레쉬 토큰
 
 	@Enumerated(EnumType.STRING)
-	private Role role;					//USER,ADMIN...
+	private Role role;					//ROLE_USER, ROLE_ADMIN...
 
 	@Column
 	private String signupType;			// 회원가입 타입 (Email, OAuth2.0)
