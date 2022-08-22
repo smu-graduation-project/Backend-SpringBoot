@@ -72,6 +72,13 @@ public class BatteryService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public void addImage(String imgUrl, Long batteryId) {
+        BatteryResponse batteryResponse = this.findById(batteryId);
+        batteryResponse.setImageUrl(imgUrl);
+        this.save(batteryResponse.toEntity());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public void save(Battery battery) {
         Battery newBattery = batteryRepository.save(battery);
     }

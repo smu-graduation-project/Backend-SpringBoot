@@ -34,6 +34,7 @@ public class Node {
     public NodeResponse toResponse() {
         return NodeResponse.builder()
                 .id(id)
+                .port(this.port)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
@@ -43,6 +44,7 @@ public class Node {
     public NodeResponseWithBattery toResponseWithBattery() {
         return NodeResponseWithBattery.builder()
                 .id(id)
+                .port(this.port)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
@@ -53,6 +55,7 @@ public class Node {
     public NodeResponseWithAll toResponseWithAll() {
         return NodeResponseWithAll.builder()
                 .id(id)
+                .port(this.port)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)

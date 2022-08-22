@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class NodeResponseWithBattery {
     private Long id;
+    private Long port;
     private String name;
     private String type;
     private String information;
@@ -25,6 +26,7 @@ public class NodeResponseWithBattery {
     public Node toEntity() {
         return Node.builder()
                 .id(id)
+                .port(this.port)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)

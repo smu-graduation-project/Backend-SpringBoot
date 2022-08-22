@@ -23,20 +23,19 @@ spring:
   sql:
     init:
       mode: never
-
-
   servlet:
     multipart:
-      max-request-size=20MB
-      max-file-size=20MB
-  cloud:
-    aws:
-      credentials:
-        accessKey={액세스키}
-        secretKey ={액세스 시크릿 키}
-      s3:
-        bucket={S3 버킷 이름)
-      region:
-        static=ap-northeast-2
-      tack:
-        auto=false
+      max-request-size: 20MB
+      max-file-size: 20MB
+
+cloud:
+  aws:
+    credentials:
+      accessKey: {access key}
+      secretKey: {access secret key}
+    s3:
+      bucket: smu-graduation-bucket
+    region:
+      static: ap-northeast-2
+    tack:
+      auto: false

@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class NodeResponseWithAll {
     private Long id;
+    private Long port;
     private String name;
     private String type;
     private String information;
@@ -25,7 +26,8 @@ public class NodeResponseWithAll {
 
     public Node toEntity() {
         return Node.builder()
-                .id(id)
+                .id(this.id)
+                .port(this.port)
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)

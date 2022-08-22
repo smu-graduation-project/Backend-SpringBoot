@@ -59,7 +59,7 @@ public class Battery {
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                // .imageUrl(this.imageUrl)
+                .imageUrl(this.imageUrl)
                 .build();
     }
 
@@ -69,7 +69,7 @@ public class Battery {
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                // .imageUrl(this.imageUrl)
+                .imageUrl(this.imageUrl)
                 .nodeResponses(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
                 .build();
     }
@@ -80,7 +80,7 @@ public class Battery {
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                // .imageUrl(this.imageUrl)
+                .imageUrl(this.imageUrl)
                 .siteResponse(this.site.toResponse())
                 .build();
     }
@@ -91,7 +91,7 @@ public class Battery {
                 .name(this.name)
                 .type(this.type)
                 .information(this.information)
-                // .imageUrl(this.imageUrl)
+                .imageUrl(this.imageUrl)
                 .nodeResponses(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
                 .siteResponse(this.site.toResponse())
                 .build();
