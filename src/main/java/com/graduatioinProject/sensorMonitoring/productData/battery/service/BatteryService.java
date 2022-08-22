@@ -6,6 +6,7 @@ import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryRequest;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithNode;
+import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithSite;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.repository.BatteryRepository;
 import com.graduatioinProject.sensorMonitoring.productData.battery.repository.BatteryRepositoryCustom;
@@ -53,9 +54,9 @@ public class BatteryService {
         return batteryRepositoryCustom.findByIdWithNode(id);
     }
 
-//    public Battery findByIdWithSite(Long id) {
-//        return batteryRepositoryCustom.findByIdWithSite(id);
-//    }
+    public BatteryResponseWithSite findByIdWithSite(Long id) {
+        return batteryRepositoryCustom.findByIdWithSite(id);
+    }
     @Transactional(rollbackFor = Exception.class)
     public void save(BatteryRequest batteryRequest, Long siteId) {
         Battery battery = batteryRequest.toEntity();
@@ -73,9 +74,9 @@ public class BatteryService {
 
     @Transactional(rollbackFor = Exception.class)
     public void addImage(String imgUrl, Long batteryId) {
-        BatteryResponse batteryResponse = this.findById(batteryId);
-        batteryResponse.setImageUrl(imgUrl);
-        this.save(batteryResponse.toEntity());
+        BatteryResponseWithSite batteryResponseWithSite = this.findByIdWithSite(batteryId);
+        batteryResponseWithSite.setImageUrl(imgUrl);
+        this.save(batteryResponseWithSite.toEntity());
     }
 
     @Transactional(rollbackFor = Exception.class)

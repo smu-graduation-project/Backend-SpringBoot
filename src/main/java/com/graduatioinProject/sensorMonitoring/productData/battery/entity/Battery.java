@@ -35,8 +35,6 @@ public class Battery {
     private String information;
 
     private String imageUrl;
-//    private String imageUrl;
-//    private long image_size;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id")
