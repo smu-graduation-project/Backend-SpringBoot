@@ -1,11 +1,14 @@
 package com.graduatioinProject.sensorMonitoring.member.controller;
 
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
-import com.graduatioinProject.sensorMonitoring.member.dto.MemberReq;
+import com.graduatioinProject.sensorMonitoring.member.config.MemberProperties;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
+import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
+import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "01. 회원")
 @CrossOrigin
+@Api(tags = "01. 회원 관리")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/api/member")
+@RequestMapping("/admin/api/v1/member")
 public class MemberController {
 
     private final ResponseService responseService;
@@ -26,19 +29,42 @@ public class MemberController {
 
     @ApiOperation(value = "회원 저장", notes = "아이디, 패스워드를 받아서 저장합니다.")
     @PostMapping
-    public SingleResult<MemberRes> saveMember(
+    public CommonResult saveUserMember(
             @ApiParam(value = "회원 객체", required = true)
-            @ModelAttribute MemberReq member
+            @ModelAttribute MemberSignupReq memberSignupReq
     ) {
-        return responseService.singleResult(memberService.save(member).toDto());
+        try {
+            memberService.signUp(memberSignupReq, Role.USER);
+            return responseService.successResult();
+        } catch (Exception e) {
+            return responseService.failResult(
+                    e.getMessage()
+            );
+        }
+    }
+
+    @ApiOperation(value = "ADMIN 회원 저장", notes = "관리자 회원의 아이디, 패스워드를 받아서 저장합니다.")
+    @PostMapping("/admin")
+    public CommonResult saveAdminMember(
+            @ApiParam(value = "Admin 회원 객체", required = true)
+            @ModelAttribute MemberSignupReq memberSignupReq
+    ) {
+        try {
+            memberService.signUp(memberSignupReq, Role.ADMIN);
+            return responseService.successResult();
+        } catch (Exception e) {
+            return responseService.failResult(
+                    e.getMessage()
+            );
+        }
     }
 
     @ApiOperation(value = "아이디로 회원 조회", notes = "아이디로 회원을 조회합니다.")
-    @GetMapping("/email")
+    @GetMapping("/username")
     public SingleResult<MemberRes> findMemberByEmail(
-            @ApiParam(value = "회원 이메일", required = true) @RequestParam String userId
+            @ApiParam(value = "회원 아이디", required = true) @RequestParam String username
     ) {
-        MemberRes byUserId = memberService.findByUserId(userId);
+        MemberRes byUserId = memberService.findByUsername(username);
         return responseService.singleResult(byUserId);
     }
 

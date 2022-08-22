@@ -23,3 +23,18 @@ spring:
   sql:
     init:
       mode: never
+  servlet:
+    multipart:
+      max-request-size: 20MB
+      max-file-size: 20MB
+cloud:
+  aws:
+    credentials:
+      accessKey: {access key}
+      secretKey: {access secret key}
+    s3:
+      bucket: smu-graduation-bucket
+    region:
+      static: ap-northeast-2
+    tack:
+      auto: false

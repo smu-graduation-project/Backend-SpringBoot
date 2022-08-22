@@ -6,19 +6,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class MemberRes {
 	private Long userSeq;
-	private String userId;
-	private String password;
+	private String username;
+	private String role;
 	private String employeeNumber;
 	private String phoneNumber;
-	private String name;
+	private String realname;
 	private String signupType;
-	private String registDate;
+	private String createDate;
 	private String updateDate;
 	private String activateYn;
 }

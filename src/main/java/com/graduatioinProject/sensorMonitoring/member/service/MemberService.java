@@ -2,17 +2,23 @@ package com.graduatioinProject.sensorMonitoring.member.service;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
-import com.graduatioinProject.sensorMonitoring.member.dto.MemberReq;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
+import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
+import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
+import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepositoryCustom;
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
+import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,7 +26,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
 	private final MemberRepository memberRepository;
+	private final MemberRepositoryCustom memberRepositoryCustom;
 	private final PasswordEncoder passwordEncoder;
+	private final HttpSession session;
 
 	@Transactional(readOnly = true)
 	public List<MemberRes> findAll() {
@@ -30,20 +38,82 @@ public class MemberService {
 				.collect(Collectors.toList());
 	}
 
-	@Transactional
-	public Member save(MemberReq memberRequestDto) {
-		if (memberRepository.existsByUserId(memberRequestDto.getUserId())) {
-			throw new BussinessException(ExMessage.MEMBER_ERROR_DUPLICATE);
-		}
-		return memberRepository.save(
-				memberRequestDto.toEntity(passwordEncoder.encode(memberRequestDto.getPassword()))
-		);
-	}
-
 	@Transactional(readOnly = true)
-	public MemberRes findByUserId(String userId) {
-		return memberRepository.findByUserId(userId)
+	public MemberRes findByUsername(String username) {
+		return memberRepository.findByUsername(username)
 				.orElseThrow(() -> new BussinessException(ExMessage.MEMBER_ERROR_NOT_FOUND))
 				.toDto();
+	}
+
+	@Transactional
+	public void signUp(MemberSignupReq memberSignupReq, Role role) {
+		String username = memberSignupReq.getUsername();
+		String employeeNumber = memberSignupReq.getEmployeeNumber();
+		String password1 = memberSignupReq.getPassword();
+		String password2 = memberSignupReq.getPassword2();
+
+		if (memberRepository.findByUsername(username).isPresent()
+			|| memberRepository.findByEmployeeNumber(employeeNumber).isPresent()) {
+			throw new BussinessException(ExMessage.MEMBER_ERROR_DUPLICATE);
+		}
+
+		verifyUserInfo(username, password1, password2);
+
+		try {
+			memberRepository.save(
+					memberSignupReq.toEntity(
+							passwordEncoder.encode(memberSignupReq.getPassword()), role
+					)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BussinessException("회원가입에 실패하였습니다.");
+		}
+	}
+
+	@Transactional
+	public void signIn(String username, String password) {
+
+		Member member = memberRepository
+				.findByUsername(username)
+				.orElseThrow(() -> new BussinessException(ExMessage.MEMBER_ERROR_NOT_FOUND));
+
+		if (!passwordEncoder.matches(password, member.getPassword())) {
+			System.out.println("비밀번호가 일치하지 않습니다.");
+			throw new BussinessException(ExMessage.MEMBER_ERROR_PASSWORD);
+		}
+		// TODO : JWT or Session 발급 필요
+	}
+
+	@Transactional
+	public List<Long> findByUserNameWithSiteIdList(String userName) {
+		return memberRepositoryCustom.findByUserNameSiteIdList(userName);
+	}
+
+	@Transactional
+	public List<SiteResponse> findByUserNameSiteList(String userName) {
+		return memberRepositoryCustom.findByUserNameWithSite(userName);
+	}
+
+	private void verifyUserInfo(String userId, String password1, String password2) {
+		verifyUserId(userId);
+		verifyUserPassword(password1, password2);
+	}
+
+	private void verifyUserPassword(String password1, String password2) {
+		Pattern passwordExpression = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$");
+		if (!passwordExpression.matcher(password1).matches()) {
+			throw new BussinessException("비밀번호는 영문자와 특수문자를 포함하여 8자 이상으로 이뤄져야 합니다.");
+		} else if (!password1.equals(password2)) {
+			throw new BussinessException("입력한 비밀번호가 서로 다름니다.");
+		}
+	}
+
+	private void verifyUserId(String userId) {
+		// 시작은 영문으로만, '_'를 제외한 특수문자 안되며 {영문, 숫자, '_'} 으로만 이루어진 5 ~ 12자 이하
+		Pattern nameExpression = Pattern.compile("^[a-zA-Z]{1}[a-zA-Z0-9_]{4,11}$");
+		if (!nameExpression.matcher(userId).matches()) {
+			throw new BussinessException(ExMessage.MEMBER_ERROR_USER_ID_FORMAT);
+		}
 	}
 }
