@@ -30,8 +30,8 @@ spring:
 cloud:
   aws:
     credentials:
-      accessKey: {access key}
-      secretKey: {access secret key}
+      accessKey: AKIA4HB6F23IKQ52BZDY
+      secretKey: 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
     s3:
       bucket: smu-graduation-bucket
     region:

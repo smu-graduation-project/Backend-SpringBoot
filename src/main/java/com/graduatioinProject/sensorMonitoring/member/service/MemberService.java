@@ -7,9 +7,7 @@ import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
-import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepositoryCustom;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
-import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
 	private final MemberRepository memberRepository;
-	private final MemberRepositoryCustom memberRepositoryCustom;
 	private final PasswordEncoder passwordEncoder;
 	private final HttpSession session;
 
@@ -83,16 +80,6 @@ public class MemberService {
 			throw new BussinessException(ExMessage.MEMBER_ERROR_PASSWORD);
 		}
 		// TODO : JWT or Session 발급 필요
-	}
-
-	@Transactional
-	public List<Long> findByUserNameWithSiteIdList(String userName) {
-		return memberRepositoryCustom.findByUserNameSiteIdList(userName);
-	}
-
-	@Transactional
-	public List<SiteResponse> findByUserNameSiteList(String userName) {
-		return memberRepositoryCustom.findByUserNameWithSite(userName);
 	}
 
 	private void verifyUserInfo(String userId, String password1, String password2) {

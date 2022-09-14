@@ -1,8 +1,8 @@
 package com.graduatioinProject.sensorMonitoring.productData.node.service;
 
+import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
-import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
@@ -11,7 +11,6 @@ import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.repository.NodeRepository;
 import com.graduatioinProject.sensorMonitoring.productData.node.repository.NodeRepositoryCustom;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
-import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ public class NodeService {
     private final NodeRepository nodeRepository;
     private final BatteryService batteryService;
     private final NodeRepositoryCustom nodeRepositoryCustom;
-    private final MemberService memberService;
+    private final MemberSiteService memberSiteService;
 
     public NodeResponse findByIdResponse(Long id) {
         return nodeRepository
@@ -60,7 +59,7 @@ public class NodeService {
 
     public Boolean chekMemberAuthorityUser(String userName, Long nodeId) {
         SiteResponse siteResponse = nodeRepositoryCustom.findByIdSite(nodeId).getBatteryResponseWithSite().getSiteResponse();
-        List<Long> siteIdList = memberService.findByUserNameWithSiteIdList(userName);
+        List<Long> siteIdList = memberSiteService.getSiteIdList(userName);
         return siteIdList.contains(siteResponse.getId());
     }
 

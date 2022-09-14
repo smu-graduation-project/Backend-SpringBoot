@@ -1,5 +1,7 @@
 package com.graduatioinProject.sensorMonitoring.productData.battery.service;
 
+import com.graduatioinProject.sensorMonitoring.MemberSite.entity.MemberSite;
+import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
@@ -13,6 +15,7 @@ import com.graduatioinProject.sensorMonitoring.productData.battery.repository.Ba
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import com.graduatioinProject.sensorMonitoring.productData.site.service.SiteService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,15 +31,12 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BatteryService {
-    @Autowired
-    private SiteService siteService;
-    @Autowired
-    private BatteryRepository batteryRepository;
-    @Autowired
-    private MemberService memberService;
-    @Autowired
-    private BatteryRepositoryCustom batteryRepositoryCustom;
+    private final SiteService siteService;
+    private final BatteryRepository batteryRepository;
+    private final MemberSiteService memberSiteService;
+    private final BatteryRepositoryCustom batteryRepositoryCustom;
 
     public List<Battery> findAll() {
         return batteryRepository.findAll();
@@ -83,33 +83,12 @@ public class BatteryService {
     public void save(Battery battery) {
         Battery newBattery = batteryRepository.save(battery);
     }
-//    public void uploadImage(MultipartFile image, Long id) {
-//        try {
-//            String imagePath = "resources/static/upload/image/battery/";
-//            String imageName = image.getOriginalFilename() + "-" + UUID.randomUUID();
-//            String imageUrl = imagePath + imageName;
-//            image.transferTo(new File(imageUrl));
-//
-//            Battery battery = findById(id);
-//            battery.setImageName(imageName);
-//            battery.setImageUrl(imageUrl);
-//            battery.setImage_size(image.getSize());
-//            batteryRepository.save(battery);
-//
-//        } catch (Exception e) {
-//            throw new BussinessException(ExMessage.IMAGE_NOT_UPLOADED.getMessage());
-//        }
-//    }
 
 
     public Boolean chekMemberAuthorityUser(String userName, Long batteryId) {
         SiteResponse siteResponse = batteryRepository.findById(batteryId).orElseThrow().getSite().toResponse();
-        List<Long> siteIdList = memberService.findByUserNameWithSiteIdList(userName);
+        List<Long> siteIdList = memberSiteService.getSiteIdList(userName);
         return siteIdList.contains(siteResponse.getId());
     }
 
-//    public Boolean checkMemberRole(Member member, Long batteryId) {
-//        Set<Member> members = batteryRepositoryCustom.findByIdMemberRole(batteryId).getSite().getMembers();
-//        return members.contains(member);
-//    }
 }

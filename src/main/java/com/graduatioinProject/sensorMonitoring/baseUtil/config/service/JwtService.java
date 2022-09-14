@@ -1,11 +1,16 @@
 package com.graduatioinProject.sensorMonitoring.baseUtil.config.service;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.JwtErrorCode;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.CustomJwtException;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
 import lombok.Getter;
@@ -18,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.auth0.jwt.JWT.require;
 
 @Slf4j
 @Service
@@ -88,14 +95,14 @@ public class JwtService {
 	}
 
 	public void checkTokenValid(String token) {
-		JWT.require(Algorithm.HMAC512(SECRET_KEY))
+		require(Algorithm.HMAC512(SECRET_KEY))
 				.build()
 				.verify(token);
 	}
 
 	public boolean isExpiredToken(String token) {
 		try {
-			JWT.require(Algorithm.HMAC512(SECRET_KEY)).build().verify(token);
+			require(Algorithm.HMAC512(SECRET_KEY)).build().verify(token);
 		} catch (TokenExpiredException e) {
 			log.info("만료 토큰");
 			return true;
@@ -105,7 +112,7 @@ public class JwtService {
 
 	public boolean isNeedToUpdateRefreshToken(String token) {
 		try {
-			Date expiresAt = JWT.require(Algorithm.HMAC512(SECRET_KEY))
+			Date expiresAt = require(Algorithm.HMAC512(SECRET_KEY))
 					.build()
 					.verify(token)
 					.getExpiresAt();
@@ -126,5 +133,20 @@ public class JwtService {
 			return true;
 		}
 		return false;
+	}
+
+
+	public String decode(final String token) {
+		try {
+			// 토큰 해독 객체 생성
+			final JWTVerifier jwtVerifier = require(Algorithm.HMAC512(SECRET_KEY)).build();
+			// 토큰 검증
+			DecodedJWT decodedJWT = jwtVerifier.verify(token);
+			// 토큰 payload 반환, 정상적인 토큰이라면 토큰 사용자 고유 ID, 아니라면 -1
+			return decodedJWT.getClaim("username").asString();
+		} catch (Exception jve) {
+			log.error(jve.getMessage());
+		}
+		throw new BussinessException(ExMessage.JWT_ERROR_FORMAT.getMessage());
 	}
 }

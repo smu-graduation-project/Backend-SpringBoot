@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.entity;
 
+import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponseWithBattery;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,20 +33,8 @@ public class Site {
     private String address;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "site")
-    private List<Battery>battery;
+    private List<Battery> battery;
 
-    /**
-     * Member와 Many to Many 관계 추가
-     *
-     */
-
-    public void addBattery(Battery addBattery) {
-        if (this.battery == null) {
-            this.battery = new ArrayList<>();
-        }
-        this.battery.add(addBattery);
-        addBattery.setSite(this);
-    }
     public SiteResponse toResponse() {
         return SiteResponse.builder()
                 .id(this.id)

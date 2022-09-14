@@ -33,15 +33,4 @@ public class SiteRepositoryCustom {
         assert site != null;
         return site.toResponseWithBattery();
     }
-
-//    public SiteResponseWithMember findByIdWithMember(Long id) {
-//        QSite qSite = QSite.site;
-//        Site site = jpaQueryFactory
-//                .selectFrom(qSite)
-//                .where(qSite.id.eq(id))
-//                .fetchOne();
-//
-//        assert site != null;
-//        return site.toResponseWithMember();
-//    }
 }

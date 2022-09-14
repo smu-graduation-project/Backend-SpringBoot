@@ -59,8 +59,6 @@ public class Member {
 	@Column
 	private String activateYn;			// 활성화 여부
 
-	@OneToMany(targetEntity = Site.class, fetch = FetchType.LAZY)
-	private List<Site> sites;			// site 접근 권한
 
 	public List<String> getRoleList() {
 		ArrayList<String> roles = new ArrayList<>();
@@ -80,22 +78,6 @@ public class Member {
 				.createDate(createDate)
 				.updateDate(updateDate)
 				.activateYn(activateYn)
-				.build();
-	}
-
-	public MemberResWithSite toDtoWithSite() {
-		return MemberResWithSite.builder()
-				.userSeq(seq)
-				.username(username)
-				.role(role.getName())
-				.employeeNumber(employeeNumber)
-				.phoneNumber(phoneNumber)
-				.realname(realname)
-				.signupType(signupType)
-				.createDate(createDate)
-				.updateDate(updateDate)
-				.activateYn(activateYn)
-				.siteResponses(sites.stream().map(Site::toResponse).collect(Collectors.toList()))
 				.build();
 	}
 }

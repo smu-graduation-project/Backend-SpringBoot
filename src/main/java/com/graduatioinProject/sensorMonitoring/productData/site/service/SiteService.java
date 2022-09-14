@@ -59,38 +59,8 @@ public class SiteService {
         siteRepository.save(siteRequest.toEntity());
     }
 
-    private void siteRequestToSite(SiteRequest siteRequest, Site site) {
-        site.setName(siteRequest.getName());
-        site.setType(siteRequest.getType());
-        site.setInformation(siteRequest.getInformation());
-        site.setAddress(siteRequest.getAddress());
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Long siteId) {
+        siteRepository.delete(siteRepository.getById(siteId));
     }
-
-    public Page<Site> getSitePage(int page) {
-        return siteRepository.findAll(PageRequest.of(page, PAGINGSIZE));
-    }
-
-    public List<Site> getSiteList(int page) {
-        Page<Site> pageSite = siteRepository.findAll(PageRequest.of(page, PAGINGSIZE));
-
-        return pageSite.stream().collect(Collectors.toList());
-    }
-
-    public SiteResponse getSiteResponse(Long id) {
-        return siteRepository.findById(id)
-                .orElseThrow(() -> new BussinessException(ExMessage.SITE_ERROR_NOT_FOUND.getMessage()))
-                .toResponse();
-    }
-
-    public void chekMemberAuthorityUser(String userName, Long siteId) {
-        List<Long> siteList = memberService.findByUserNameWithSiteIdList(userName);
-        if (!siteList.contains(siteId)) {
-            throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
-        }
-    }
-
-//    public Boolean checkMemberRole(Member member, Long siteId) {
-//        Set<Member> members = siteRepositoryCustom.findByIdMemberRole(siteId).getMembers();
-//        return members.contains(member);
-//    }
 }
