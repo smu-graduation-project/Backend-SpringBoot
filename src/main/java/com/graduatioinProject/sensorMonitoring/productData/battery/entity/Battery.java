@@ -68,7 +68,7 @@ public class Battery {
                 .type(this.type)
                 .information(this.information)
                 .imageUrl(this.imageUrl)
-                .nodeResponses(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
+                .nodeResponse(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
                 .build();
     }
 
@@ -90,7 +90,7 @@ public class Battery {
                 .type(this.type)
                 .information(this.information)
                 .imageUrl(this.imageUrl)
-                .nodeResponses(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
+                .nodeResponse(this.node.stream().map(Node::toResponse).collect(Collectors.toList()))
                 .siteResponse(this.site.toResponse())
                 .build();
     }

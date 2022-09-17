@@ -3,14 +3,14 @@ package com.graduatioinProject.sensorMonitoring.productData.site.controller;
 import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheck;
 import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheckAdmin;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.SiteAdmin;
 import com.graduatioinProject.sensorMonitoring.baseUtil.aop.SiteUser;
-import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
+import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
@@ -39,6 +39,7 @@ public class SiteController {
 
     private final SiteService siteService;
     private final MemberSiteService memberSiteService;
+    private final MemberService memberService;
     private final ResponseService responseService;
     private final JwtService jwtService;
 
@@ -65,7 +66,7 @@ public class SiteController {
 
     @LoginCheckAdmin
     @ApiOperation(value = "사이트 삭제", notes = "사이트 id를 받아 사이트 삭제")
-    @PutMapping("/delete/{siteId}")
+    @DeleteMapping("/delete/{siteId}")
     public CommonResult updateSite(HttpServletRequest httpServletRequest,
                                    @PathVariable Long siteId) {
         siteService.delete(siteId);
@@ -81,18 +82,19 @@ public class SiteController {
     }
 
     @LoginCheck
-    @ApiOperation(value = "사이트 리스트(member)", notes = "해당 아이디로 접근 가능한 모든 사이트 정보를 반환")
+    @ApiOperation(value = "사이트 리스트", notes = "해당 아이디로 접근 가능한 모든 사이트 정보를 반환(admin인 경우 모든 site반환)")
     @GetMapping("/all")
-    public ListResult<SiteResponse> getAllNodeMember(HttpServletRequest httpServletRequest) {
-        String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
-        return responseService.listResult(
-                memberSiteService.getSiteList(userName));
-    }
-
-    @LoginCheckAdmin
-    @ApiOperation(value = "사이트 리스트(admin)", notes = "모든 사이트 정보를 반환")
-    @GetMapping("/admin/all")
-    public ListResult<SiteResponse> getAllNodeAdmin(HttpServletRequest httpServletRequest) {
-        return responseService.listResult(siteService.findAll());
+    public CommonResult getAllNodeMember(HttpServletRequest httpServletRequest) {
+        try {
+            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
+                return responseService.listResult(siteService.findAll());
+            }
+            return responseService.listResult(
+                    memberSiteService.getSiteList(userName));
+//          return responseService.listResult(siteService.findAll());
+        } catch (Exception e){
+            return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
+        }
     }
 }

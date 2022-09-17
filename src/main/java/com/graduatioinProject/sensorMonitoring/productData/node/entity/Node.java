@@ -24,6 +24,7 @@ public class Node {
     private Long port;
 
     private String name;
+    @Column(name = "node_type")
     private String type;
     private String information;
 

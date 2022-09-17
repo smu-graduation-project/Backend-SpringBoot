@@ -27,7 +27,7 @@ public class BatteryRepositoryCustom {
 
         Battery battery = jpaQueryFactory
                 .selectFrom(qBattery)
-                .join(qBattery.node, qNode).fetchJoin()
+                .join(qBattery.node).fetchJoin()
                 .where(qBattery.id.eq(id))
                 .fetchOne();
 

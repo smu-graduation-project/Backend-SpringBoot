@@ -24,7 +24,7 @@ public class BatteryResponseWithNode {
     private String information;
 
     private String imageUrl;
-    private List<NodeResponse> nodeResponses;
+    private List<NodeResponse> nodeResponse;
 
     public Battery toEntity() {
         return Battery.builder()
@@ -33,7 +33,7 @@ public class BatteryResponseWithNode {
                 .type(this.type)
                 .information(this.information)
                 .imageUrl(this.imageUrl)
-                .node(this.nodeResponses.stream().map(NodeResponse::toEntity).collect(Collectors.toList()))
+                .node(this.nodeResponse.stream().map(NodeResponse::toEntity).collect(Collectors.toList()))
                 .build();
     }
 }

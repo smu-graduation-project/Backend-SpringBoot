@@ -73,6 +73,24 @@ public class AopConfig {
         return joinPoint.proceed();
     }
 
+
+    @Around("loginCheckAdmin()")
+    public Object checkAdmin(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.info("Check Admin");
+
+        Optional<HttpServletRequest> servletRequest =
+                Optional.of(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest());
+        HttpServletRequest httpServletRequest = servletRequest.get();
+        String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+        MemberRes memberRes = memberService.findByUsername(userName);
+        log.info("userName = " + userName);
+        if(memberRes.getRole().equals(Role.ADMIN.getName())) {
+            return joinPoint.proceed();
+        }
+        throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
+    }
+
+
     // @Before("checkSiteUser() && args(siteId)")
     @Around("checkSiteUser()")
     public Object checkSiteAuthorityUser(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -80,27 +98,7 @@ public class AopConfig {
 
         Object[] objects = joinPoint.getArgs();
         Long siteId = (Long) objects[1];
-        Optional<HttpServletRequest> servletRequest =
-                Optional.of(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest());
-        HttpServletRequest httpServletRequest = servletRequest.get();
-        String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
-        log.info("userName = " + userName);
-
-        List<Long> siteList = memberSiteService.getSiteIdList(userName);
-        if (siteList.contains(siteId)) {
-            return joinPoint.proceed();
-        }
-        else {
-            throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
-        }
-    }
-
-    @Around("checkSiteAdmin()")
-    public Object checkSiteAuthorityAdmin(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info("Check Site Admin");
-
-        Object[] objects = joinPoint.getArgs();
-        Long siteId = (Long) objects[1];
+        log.info("site Id is " + siteId);
         Optional<HttpServletRequest> servletRequest =
                 Optional.of(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest());
         HttpServletRequest httpServletRequest = servletRequest.get();
@@ -108,62 +106,68 @@ public class AopConfig {
         log.info("userName = " + userName);
 
         MemberRes memberRes = memberService.findByUsername(userName);
-        if (memberRes.getRole().equals(Role.ADMIN.getName())) {
-            List<Long> siteList = memberSiteService.getSiteIdList(userName);
-            if (siteList.contains(siteId)) {
-                return joinPoint.proceed();
-            }
+        log.info("userName = " + userName);
+        if(memberRes.getRole().equals(Role.ADMIN.getName())) {
+            return joinPoint.proceed();
+        }
+
+        List<Long> siteList = memberSiteService.getSiteIdList(userName);
+        if (siteList.contains(siteId)) {
+            return joinPoint.proceed();
         }
         throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
 
     }
 
-
     @Around("checkBatteryUser()")
     public Object checkBatteryAuthorityUser(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("Check Battery User");
-//        HttpServletRequest request = null;
-//        Long id = null;
-//
-//        Object[] parms = joinPoint.getArgs();
-//
-//        for (Object parm : parms) {
-//            if (parm.equals("id")) {
-//                id = (Long) parm;
-//            }
-//            if (parm.equals("httpServletRequest")) {
-//                request = (HttpServletRequest) parm;
-//            }
-//        }
 
-//        String memberId  = Objects.requireNonNull(request).getHeader(JwtProperties.ID);
-//        if (!batteryService.chekMemberAuthorityUser(memberId, id)) {
-//            throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
-//        }
-        return joinPoint.proceed();
+        Object[] objects = joinPoint.getArgs();
+        Long batteryId = (Long) objects[1];
+        log.info("Battery Id is " + batteryId);
+        Optional<HttpServletRequest> servletRequest =
+                Optional.of(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest());
+        HttpServletRequest httpServletRequest = servletRequest.get();
+        String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+        log.info("userName = " + userName);
+
+        MemberRes memberRes = memberService.findByUsername(userName);
+        log.info("userName = " + userName);
+        if(memberRes.getRole().equals(Role.ADMIN.getName())) {
+            return joinPoint.proceed();
+        }
+
+        if (nodeService.chekMemberAuthorityUser(userName, batteryId)) {
+            return joinPoint.proceed();
+        }
+        throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
     }
 
     @Around("checkNodeUser()")
     public Object checkNodeAuthorityUser(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("Check Node User");
-//        HttpServletRequest request = null;
-//        Long id = null;
-//
-//        Object[] parms = joinPoint.getArgs();
-//
-//        for (Object parm : parms) {
-//            if (parm.equals("id")) {
-//                id = (Long) parm;
-//            }
-//            if (parm.equals("httpServletRequest")) {
-//                request = (HttpServletRequest) parm;
-//            }
-//        }
 
-//        String memberId  = Objects.requireNonNull(request).getHeader(JwtProperties.ID);
-//        if (!nodeService.chekMemberAuthorityUser(memberId, id)) {
-//            throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
-//        }
-        return joinPoint.proceed();
+        Object[] objects = joinPoint.getArgs();
+        Long nodeId = (Long) objects[1];
+
+        log.info("node Id is " + nodeId);
+        Optional<HttpServletRequest> servletRequest =
+                Optional.of(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest());
+        HttpServletRequest httpServletRequest = servletRequest.get();
+        String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+        log.info("userName = " + userName);
+
+        MemberRes memberRes = memberService.findByUsername(userName);
+        log.info("userName = " + userName);
+        if(memberRes.getRole().equals(Role.ADMIN.getName())) {
+            return joinPoint.proceed();
+        }
+
+        if (nodeService.chekMemberAuthorityUser(userName, nodeId)) {
+            return joinPoint.proceed();
+        }
+        throw new BussinessException(ExMessage.NO_AUTHORITY.getMessage());
+
     }
 }

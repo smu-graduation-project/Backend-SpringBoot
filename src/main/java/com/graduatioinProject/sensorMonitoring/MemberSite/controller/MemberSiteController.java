@@ -40,8 +40,8 @@ public class MemberSiteController {
     }
 
     @LoginCheckAdmin
-    @ApiOperation(value = "사이트 권한 삭", notes = "사이트와 유저의 정보를 받아 Site 권한 삭제")
-    @PostMapping("/delete")
+    @ApiOperation(value = "사이트 권한 삭제", notes = "사이트와 유저의 정보를 받아 Site 권한 삭제")
+    @DeleteMapping("/delete")
     public CommonResult deleteSite(HttpServletRequest httpServletRequest,
                                 @RequestBody MemberSiteRequest request) {
         log.info("add MemberSite");

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @Author : Jeeseob
@@ -38,8 +39,8 @@ public class BatteryService {
     private final MemberSiteService memberSiteService;
     private final BatteryRepositoryCustom batteryRepositoryCustom;
 
-    public List<Battery> findAll() {
-        return batteryRepository.findAll();
+    public List<BatteryResponse> findAll() {
+        return batteryRepository.findAll().stream().map(Battery::toResponse).collect(Collectors.toList());
     }
 
     public BatteryResponse findById(Long id) {
@@ -58,10 +59,10 @@ public class BatteryService {
         return batteryRepositoryCustom.findByIdWithSite(id);
     }
     @Transactional(rollbackFor = Exception.class)
-    public void save(BatteryRequest batteryRequest, Long siteId) {
+    public BatteryResponse save(BatteryRequest batteryRequest, Long siteId) {
         Battery battery = batteryRequest.toEntity();
         battery.setSite(Site.builder().id(siteId).build());
-        this.save(battery);
+        return batteryRepository.save(battery).toResponse();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -81,9 +82,13 @@ public class BatteryService {
 
     @Transactional(rollbackFor = Exception.class)
     public void save(Battery battery) {
-        Battery newBattery = batteryRepository.save(battery);
+        batteryRepository.save(battery);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Long batteryId) {
+        batteryRepository.deleteById(batteryId);
+    }
 
     public Boolean chekMemberAuthorityUser(String userName, Long batteryId) {
         SiteResponse siteResponse = batteryRepository.findById(batteryId).orElseThrow().getSite().toResponse();

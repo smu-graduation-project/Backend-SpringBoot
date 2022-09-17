@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Api(tags = "01. 회원 관리")
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/api/v1/member")

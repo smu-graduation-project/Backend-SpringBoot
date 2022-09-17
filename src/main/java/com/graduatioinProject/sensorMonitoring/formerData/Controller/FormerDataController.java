@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.formerData.Controller;
 
+import com.graduatioinProject.sensorMonitoring.baseUtil.aop.NodeUser;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
@@ -31,15 +32,15 @@ public class FormerDataController {
 
     private final FormerDataService formerDataService;
     private final ResponseService responseService;
-    private final NodeService nodeService;
 
-    @GetMapping("/electricCurrent/list/{id}")
+    @NodeUser
+    @GetMapping("/electricCurrent/list/{nodeId}")
     @ApiOperation(value = "전류 이전 데이터 목록", notes = "날짜와 id 받아 전류 이전 데이러 목록을 반환")
     public ListResult<FormerDataResponse> getElectricCurrentList(HttpServletRequest httpServletRequest,
-                                                                 @PathVariable Long id,
+                                                                 @PathVariable Long nodeId,
                                                                  FormerDataRequest request) {
         try {
-            List<FormerDataResponse> result = formerDataService.getElectricCurrentList(request.getStartDate(), request.getEndDate(), id);
+            List<FormerDataResponse> result = formerDataService.getElectricCurrentList(request.getStartDate(), request.getEndDate(), nodeId);
             return  responseService.listResult(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,13 +48,14 @@ public class FormerDataController {
         }
     }
 
-    @GetMapping("/temperature/list/{id}")
+    @NodeUser
+    @GetMapping("/temperature/list/{nodeId}")
     @ApiOperation(value = "온도 이전 데이터 목록", notes = "날짜와 id를 받아 온도 이전 데이러 목록을 반환")
     public ListResult<FormerDataResponse>  getTemperatureList(HttpServletRequest httpServletRequest,
-                                                              @PathVariable Long id,
+                                                              @PathVariable Long nodeId,
                                                               FormerDataRequest request) {
         try {
-            List<FormerDataResponse> result = formerDataService.getTemperatureList(request.getStartDate(), request.getEndDate(), id);
+            List<FormerDataResponse> result = formerDataService.getTemperatureList(request.getStartDate(), request.getEndDate(), nodeId);
             return responseService.listResult(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,13 +63,14 @@ public class FormerDataController {
         }
     }
 
-    @GetMapping("/voltage/list/{id}")
+    @NodeUser
+    @GetMapping("/voltage/list/{nodeId}")
     @ApiOperation(value = "전압 이전 데이터 목록", notes = "날짜와 id를 받아 전압 이전 데이러 목록을 반환")
     public ListResult<FormerDataResponse>  getVoltageList(HttpServletRequest httpServletRequest,
-                                                          @PathVariable Long id,
+                                                          @PathVariable Long nodeId,
                                                           FormerDataRequest request) {
         try {
-            List<FormerDataResponse> result = formerDataService.getVoltageList(request.getStartDate(), request.getEndDate(), id);
+            List<FormerDataResponse> result = formerDataService.getVoltageList(request.getStartDate(), request.getEndDate(), nodeId);
             return responseService.listResult(result);
         } catch (Exception e) {
             e.printStackTrace();

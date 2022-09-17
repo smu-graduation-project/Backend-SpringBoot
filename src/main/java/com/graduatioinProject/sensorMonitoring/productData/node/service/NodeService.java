@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -63,8 +64,8 @@ public class NodeService {
         return siteIdList.contains(siteResponse.getId());
     }
 
-    public List<Node> findAll(){
-        return nodeRepository.findAll();
+    public List<NodeResponse> findAll(){
+        return nodeRepository.findAll().stream().map(Node::toResponse).collect(Collectors.toList());
     }
 
 

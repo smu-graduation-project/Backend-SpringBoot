@@ -28,9 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class SiteService {
-    private static final int PAGINGSIZE = 10;
     private final SiteRepository siteRepository;
-    private final MemberService memberService;
     private final SiteRepositoryCustom siteRepositoryCustom;
 
     public List<SiteResponse> findAll() {

@@ -2,12 +2,14 @@ package com.graduatioinProject.sensorMonitoring.home.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheck;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.member.dto.LoginReq;
+import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
 import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
@@ -21,8 +23,10 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Slf4j
+@CrossOrigin
 @Api(tags = "0. 홈")
 @RestController
 @RequestMapping("/api/v1")
@@ -67,5 +71,13 @@ public class HomeController {
 					e.getMessage()
 			);
 		}
+	}
+
+	@LoginCheck
+	@ApiOperation(value = "회원 등급 조회", notes = "회원 등급을 반환합니다.")
+	@GetMapping("/role")
+	public CommonResult findMemberRole(HttpServletRequest httpServletRequest) {
+		String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+		return responseService.singleResult(memberService.findByUsername(userName).getRole());
 	}
 }
