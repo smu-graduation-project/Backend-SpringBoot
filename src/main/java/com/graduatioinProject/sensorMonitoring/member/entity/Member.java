@@ -1,13 +1,16 @@
 package com.graduatioinProject.sensorMonitoring.member.entity;
 
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
+import com.graduatioinProject.sensorMonitoring.member.dto.MemberResWithSite;
 import com.graduatioinProject.sensorMonitoring.member.dto.Role;
+import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Entity
@@ -55,6 +58,7 @@ public class Member {
 	@Setter
 	@Column
 	private String activateYn;			// 활성화 여부
+
 
 	public List<String> getRoleList() {
 		ArrayList<String> roles = new ArrayList<>();

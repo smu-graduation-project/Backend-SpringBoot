@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.member.dto;
 
+import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,11 @@ public class MemberRes {
 	private String createDate;
 	private String updateDate;
 	private String activateYn;
+
+    public Member toEntity() {
+		return Member.builder()
+				.seq(this.userSeq)
+				.username(this.username)
+				.build();
+    }
 }

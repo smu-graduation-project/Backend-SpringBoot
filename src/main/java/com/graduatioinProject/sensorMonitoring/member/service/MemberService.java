@@ -7,6 +7,7 @@ import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.member.repository.MemberRepository;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
