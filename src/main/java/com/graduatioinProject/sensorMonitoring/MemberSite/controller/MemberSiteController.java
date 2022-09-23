@@ -1,11 +1,14 @@
 package com.graduatioinProject.sensorMonitoring.MemberSite.controller;
 
 import com.graduatioinProject.sensorMonitoring.MemberSite.dto.MemberSiteRequest;
+import com.graduatioinProject.sensorMonitoring.MemberSite.dto.MemberSiteResponse;
 import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheckAdmin;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
+import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
+import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +47,17 @@ public class MemberSiteController {
     @DeleteMapping("/delete")
     public CommonResult deleteSite(HttpServletRequest httpServletRequest,
                                 @RequestBody MemberSiteRequest request) {
-        log.info("add MemberSite");
+        log.info("delete MemberSite");
         memberSiteService.delete(request);
         return responseService.successResult();
+    }
+
+    @LoginCheckAdmin
+    @ApiOperation(value = "사이트 권한 리스트", notes = "사이트와 유저의 정보를 받아 Site 리스트 변환")
+    @GetMapping("/list")
+    public ListResult<MemberSiteResponse> siteList(HttpServletRequest httpServletRequest) {
+        log.info("list MemberSite");
+        return responseService.listResult(memberSiteService.findAll());
     }
 
 }
