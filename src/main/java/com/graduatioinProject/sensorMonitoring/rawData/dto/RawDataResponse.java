@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class RawDataResponse {
-	private Integer siteId;
-	private Integer batteryId;
 	private Long nodePort;
 	private String timeStamp;
 	private Integer sequence;

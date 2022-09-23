@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Api(tags = "로우 데이터")
 @Slf4j
@@ -20,21 +21,17 @@ import javax.persistence.*;
 public class RawData {
 	@Id @Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
-	@Column private Long siteId;
-	@Column private Long batteryId;
 	@Column private Long nodePort;
-	@Column private String timeStamp;
+	@Column private LocalDateTime timeStamp;
 	@Column private Integer sequence;
 	@Column private Double temperature;
 	@Column private Double voltage;
 	@Column private String electricCurrent;
 
-	private RawDataResponse toDto(int siteId, int batteryId) {
+	public RawDataResponse toDto() {
 		return RawDataResponse.builder()
-				.siteId(siteId)
-				.batteryId(batteryId)
 				.nodePort(nodePort)
-				.timeStamp(timeStamp)
+				.timeStamp(timeStamp.toString())
 				.sequence(sequence)
 				.temperature(temperature)
 				.voltage(voltage)
