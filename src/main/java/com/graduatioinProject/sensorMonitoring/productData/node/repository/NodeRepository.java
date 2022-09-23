@@ -9,4 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface NodeRepository extends JpaRepository<Node, Long> {
+
+	Node findByPort(Long port);
 }
