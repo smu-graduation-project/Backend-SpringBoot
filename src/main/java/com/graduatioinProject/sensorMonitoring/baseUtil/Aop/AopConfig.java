@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.baseUtil.aop;
+package com.graduatioinProject.sensorMonitoring.baseUtil.Aop;
 
 import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;

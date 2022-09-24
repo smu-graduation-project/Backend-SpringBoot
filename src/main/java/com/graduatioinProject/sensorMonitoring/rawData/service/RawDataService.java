@@ -1,19 +1,10 @@
 package com.graduatioinProject.sensorMonitoring.rawData.service;
 
-import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
-import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
-import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponseWithAll;
-import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
-import com.graduatioinProject.sensorMonitoring.productData.node.repository.NodeRepository;
-import com.graduatioinProject.sensorMonitoring.productData.node.service.NodeService;
 import com.graduatioinProject.sensorMonitoring.rawData.dto.RawDataRequest;
 import com.graduatioinProject.sensorMonitoring.rawData.dto.RawDataResponse;
 import com.graduatioinProject.sensorMonitoring.rawData.entity.RawData;
 import com.graduatioinProject.sensorMonitoring.rawData.repository.RawDataJpaRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RawDataService {
 
 	private final RawDataJpaRepository rawDataJpaRepository;
@@ -43,9 +34,9 @@ public class RawDataService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<RawDataResponse> findRawDataList(int nodePort, LocalDate startDate, LocalDate endDate) {
+	public List<RawDataResponse> findRawDataList(Long nodePort, int hour) {
 		return rawDataJpaRepository
-				.findRawDataByNodePortAndTimeStampBetweenOOrderByTimeStamp(nodePort, startDate, endDate)
+				.findAllByNodePortAndTimeStampAfterOrderBySequence(nodePort, LocalDateTime.now().minusHours(hour))
 				.stream()
 				.map(RawData::toDto)
 				.collect(Collectors.toList());
