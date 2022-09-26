@@ -1,26 +1,20 @@
 package com.graduatioinProject.sensorMonitoring.productData.node.controller;
 
-import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.BatteryUser;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheck;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheckAdmin;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.NodeUser;
-import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.BatteryUser;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheck;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheckAdmin;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.NodeUser;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
-import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
-import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithNode;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeResponse;
 import com.graduatioinProject.sensorMonitoring.productData.node.dto.NodeRequest;
-import com.graduatioinProject.sensorMonitoring.productData.node.entity.Node;
 import com.graduatioinProject.sensorMonitoring.productData.node.service.NodeService;
 import com.graduatioinProject.sensorMonitoring.productData.site.service.SiteService;
 import io.swagger.annotations.Api;
@@ -29,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Api(tags = "06. 노드")
@@ -104,15 +97,16 @@ public class NodeController {
     public CommonResult getAllNode(HttpServletRequest httpServletRequest) {
 
         try {
-            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
-            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
-                return responseService.listResult(nodeService.findAll());
-            }
-            return responseService.listResult(
-                    nodeService.findAll()
-                            .stream()
-                            .filter(i -> nodeService.chekMemberAuthorityUser(userName, i.getId()))
-                            .collect(Collectors.toList()));
+//            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+//            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
+//                return responseService.listResult(nodeService.findAll());
+//            }
+//            return responseService.listResult(
+//                    nodeService.findAll()
+//                            .stream()
+//                            .filter(i -> nodeService.chekMemberAuthorityUser(userName, i.getId()))
+//                            .collect(Collectors.toList()));
+            return responseService.listResult(nodeService.findAll());
         } catch (Exception e){
             return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }

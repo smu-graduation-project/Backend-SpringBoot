@@ -19,7 +19,7 @@ public class RawDataService {
 
 	private final RawDataJpaRepository rawDataJpaRepository;
 
-	@Transactional
+//	@Transactional
 	public void saveRawData(RawDataRequest rawDataRequest) {
 		rawDataJpaRepository.save(
 				RawData.builder()
@@ -33,10 +33,10 @@ public class RawDataService {
 		);
 	}
 
-	@Transactional(readOnly = true)
+//	@Transactional(readOnly = true)
 	public List<RawDataResponse> findRawDataList(Long nodePort, int hour) {
 		return rawDataJpaRepository
-				.findAllByNodePortAndTimeStampAfterOrderBySequence(nodePort, LocalDateTime.now().minusHours(hour))
+				.findAllByNodePortAndTimeStampAfterOrderByTimeStamp(nodePort, LocalDateTime.now().minusHours(hour))
 				.stream()
 				.map(RawData::toDto)
 				.collect(Collectors.toList());

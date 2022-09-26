@@ -1,10 +1,8 @@
 package com.graduatioinProject.sensorMonitoring.productData.battery.controller;
 
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.BatteryUser;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheck;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheckAdmin;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.SiteUser;
-import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheck;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheckAdmin;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.SiteUser;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
@@ -15,7 +13,6 @@ import com.graduatioinProject.sensorMonitoring.member.dto.Role;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryRequest;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
-import com.graduatioinProject.sensorMonitoring.productData.battery.entity.Battery;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.AwsS3Service;
 import com.graduatioinProject.sensorMonitoring.productData.battery.service.BatteryService;
 import com.graduatioinProject.sensorMonitoring.productData.site.service.SiteService;
@@ -84,11 +81,11 @@ public class BatteryController {
 
     @SiteUser
     @ApiOperation(value = "배터리 상세정보", notes = "배터리 id를 받아 해당하는 배터리 정보를 반환")
-    @GetMapping("/detail/{siteId}")
+    @GetMapping("/detail/{batteryId}")
     public SingleResult<BatteryResponse> getBatteryById(HttpServletRequest httpServletRequest,
-                                                        @PathVariable Long siteId) {
+                                                        @PathVariable Long batteryId) {
         return responseService.singleResult(
-                batteryService.findById(siteId));
+                batteryService.findById(batteryId));
     }
 
     @SiteUser
@@ -108,16 +105,17 @@ public class BatteryController {
     public CommonResult getAllNode(HttpServletRequest httpServletRequest) {
 
         try {
-            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
-            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
-                return responseService.listResult(batteryService.findAll());
-            }
-
-            return responseService.listResult(
-                    batteryService.findAll()
-                            .stream()
-                            .filter(i -> batteryService.chekMemberAuthorityUser(userName, i.getId()))
-                            .collect(Collectors.toList()));
+//            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+//            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
+//                return responseService.listResult(batteryService.findAll());
+//            }
+//
+//            return responseService.listResult(
+//                    batteryService.findAll()
+//                            .stream()
+//                            .filter(i -> batteryService.chekMemberAuthorityUser(userName, i.getId()))
+//                            .collect(Collectors.toList()));
+            return responseService.listResult(batteryService.findAll());
         } catch (Exception e){
             return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }

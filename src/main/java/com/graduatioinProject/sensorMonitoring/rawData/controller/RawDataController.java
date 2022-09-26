@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -32,8 +30,7 @@ public class RawDataController {
 	@ApiOperation(value = "로우 데이터 저장(프론트 처리 X)", notes = "데이터 서버로 데이터를 받아서 저장합니다.")
 	public CommonResult saveRawData(
 			@ApiParam(value = "로우 데이터 객체", required = true)
-			@ModelAttribute RawDataRequest rawDataRequest
-	) {
+			@RequestBody RawDataRequest rawDataRequest) {
 		try {
 			rawDataService.saveRawData(rawDataRequest);
 			return responseService.successResult();
@@ -48,8 +45,7 @@ public class RawDataController {
 	@ApiOperation(value = "로우 데이터 호출", notes = "로우 데이터를 반환합니다.")
 	public ListResult<RawDataResponse> getRawDataDtoList(
 			@ApiParam(value = "노드 번호", required = true) @RequestParam Long nodePort,
-			@ApiParam(value = "기간(시간 단위)") @RequestParam int hour
-	) {
+			@ApiParam(value = "기간(시간 단위)") @RequestParam int hour) {
 		try {
 			List<RawDataResponse> data = rawDataService.findRawDataList(nodePort, hour);
 			return responseService.listResult(data);

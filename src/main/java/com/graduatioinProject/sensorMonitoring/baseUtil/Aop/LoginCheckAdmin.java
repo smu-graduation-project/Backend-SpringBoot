@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.baseUtil.aop;
+package com.graduatioinProject.sensorMonitoring.baseUtil.Aop;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

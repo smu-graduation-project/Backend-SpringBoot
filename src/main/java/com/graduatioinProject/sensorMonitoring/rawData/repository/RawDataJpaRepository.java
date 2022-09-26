@@ -15,5 +15,5 @@ import java.util.List;
 @Repository
 public interface RawDataJpaRepository extends JpaRepository<RawData, Long> {
 
-    List<RawData> findAllByNodePortAndTimeStampAfterOrderBySequence(Long nodePort, LocalDateTime timeStamp);
+    List<RawData> findAllByNodePortAndTimeStampAfterOrderByTimeStamp(Long nodePort, LocalDateTime timeStamp);
 }

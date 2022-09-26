@@ -36,7 +36,7 @@ public class NodeRepositoryCustom {
         return node.toResponseWithAll();
     }
 
-    public NodeResponseWithBattery findByIdBattery(Long id) {
+    public Node findByIdBattery(Long id) {
         QBattery qBattery = QBattery.battery;
         QNode qNode = QNode.node;
         Node node = jpaQueryFactory
@@ -46,6 +46,6 @@ public class NodeRepositoryCustom {
                 .fetchOne();
 
         assert node != null;
-        return node.toResponseWithBattery();
+        return node;
     }
 }

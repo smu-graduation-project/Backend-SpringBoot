@@ -1,29 +1,20 @@
 package com.graduatioinProject.sensorMonitoring.home.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheck;
-import com.graduatioinProject.sensorMonitoring.baseUtil.config.jwt.JwtProperties;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheck;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
 import com.graduatioinProject.sensorMonitoring.member.dto.LoginReq;
-import com.graduatioinProject.sensorMonitoring.member.dto.MemberRes;
 import com.graduatioinProject.sensorMonitoring.member.dto.MemberSignupReq;
 import com.graduatioinProject.sensorMonitoring.member.dto.Role;
-import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Slf4j
 @CrossOrigin

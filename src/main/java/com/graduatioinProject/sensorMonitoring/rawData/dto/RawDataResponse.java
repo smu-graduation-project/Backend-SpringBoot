@@ -5,16 +5,12 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RawDataResponse implements Comparable<RawDataResponse>{
+public class RawDataResponse {
 	private Long nodePort;
 	private String timeStamp;
-	private Integer sequence;
+	private Long sequence;
 	private Double temperature;
 	private Double voltage;
-	private String electricCurrent;
+	private Double electricCurrent;
 
-	@Override
-	public int compareTo(RawDataResponse o) {
-		return this.getSequence() - o.getSequence();
-	}
 }
