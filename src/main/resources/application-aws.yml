@@ -1,0 +1,8 @@
+cloud:
+  aws:
+    s3:
+      bucket: smu-graduation-bucket
+    region:
+      static: ap-northeast-2
+    tack:
+      auto: false
