@@ -35,7 +35,7 @@ public class BatteryRepositoryCustom {
         return battery.toResponseWithNode();
     }
 
-    public BatteryResponseWithSite findByIdWithSite(Long id) {
+    public Battery findByIdWithSite(Long id) {
         QBattery qBattery = QBattery.battery;
         QSite qSite = QSite.site;
         Battery battery = jpaQueryFactory
@@ -45,6 +45,6 @@ public class BatteryRepositoryCustom {
                 .fetchOne();
 
         assert battery != null;
-        return battery.toResponseWithSite();
+        return battery;
     }
 }

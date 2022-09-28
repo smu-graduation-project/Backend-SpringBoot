@@ -23,10 +23,10 @@ public class RawData {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 	@Column private Long nodePort;
 	@Column private LocalDateTime timeStamp;
-	@Column private Integer sequence;
+	@Column private Long sequence;
 	@Column private Double temperature;
 	@Column private Double voltage;
-	@Column private String electricCurrent;
+	@Column private Double electricCurrent;
 
 	public RawDataResponse toDto() {
 		return RawDataResponse.builder()

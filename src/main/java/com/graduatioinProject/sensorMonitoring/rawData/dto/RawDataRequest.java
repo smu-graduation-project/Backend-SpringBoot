@@ -6,6 +6,8 @@ import lombok.Data;
 import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,18 +17,15 @@ import java.util.stream.Stream;
 public class RawDataRequest {
 	private Long nodePort;
 	private String timeStamp;
-	private Integer sequence;
+	private Long sequence;
 	private Double temperature;
 	private Double voltage;
-	private String electricCurrent;
+	private Double electricCurrent;
 
 	public LocalDateTime extractLocalDateTime() {
 		String timeString = this.timeStamp;
 		//2022-09-17T19:58:09
-		String[] dateTime = timeString.split("T");
-		Integer[] yyyyMMdd = (Integer[]) Arrays.stream(dateTime[0].split("-")).map(Integer::parseInt).toArray();
-		Integer[] hhMMss = (Integer[]) Arrays.stream(dateTime[1].split(":")).map(Integer::parseInt).toArray();
-
-		return LocalDateTime.of(yyyyMMdd[0], yyyyMMdd[1], yyyyMMdd[2], hhMMss[0], hhMMss[1], hhMMss[2]);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+		return  LocalDateTime.parse(timeString, formatter);
 	}
 }

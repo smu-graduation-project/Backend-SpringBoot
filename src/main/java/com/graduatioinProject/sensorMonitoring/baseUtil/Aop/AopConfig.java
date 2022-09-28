@@ -1,4 +1,4 @@
-package com.graduatioinProject.sensorMonitoring.baseUtil.aop;
+package com.graduatioinProject.sensorMonitoring.baseUtil.Aop;
 
 import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
@@ -35,28 +35,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AopConfig {
     private final MemberService memberService;
-    private final SiteService siteService;
-    private final BatteryService batteryService;
     private final NodeService nodeService;
     private final JwtService jwtService;
     private final MemberSiteService memberSiteService;
 
     // PointCut : 적용할 지점 또는 범위 선택
     // @Pointcut("execution(public * com.graduatioinProject.sensorMonitoring.productData.site.controller..*(..))")
-    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.aop.SiteUser)")
+    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.Aop.SiteUser)")
     private void checkSiteUser() { }
 
     // @Pointcut("execution(public * com.graduatioinProject.sensorMonitoring.productData.battery.controller..*(..))")
-    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.aop.BatteryUser)")
+    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.Aop.BatteryUser)")
     private void checkBatteryUser() { }
     // @Pointcut("execution(public * com.graduatioinProject.sensorMonitoring.productData.node.controller..*(..))")
-    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.aop.NodeUser)")
+    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.Aop.NodeUser)")
     private void checkNodeUser() { }
 
-    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheck)")
+    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheck)")
     private void loginCheckUser() { }
 
-    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheckAdmin)")
+    @Pointcut("@annotation(com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheckAdmin)")
     private void loginCheckAdmin() { }
 
 

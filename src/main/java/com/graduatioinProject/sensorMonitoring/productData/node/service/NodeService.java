@@ -41,11 +41,11 @@ public class NodeService {
 
     @Transactional(rollbackFor = Exception.class)
     public void update(NodeRequest nodeUpdateRequest, Long batteryId, Long nodeId) {
-        Long port = nodeRepository.findById(nodeId).orElseThrow().getPort();
-        Node node = nodeUpdateRequest.toEntity();
-        node.setPort(port);
-        node.setId(nodeId);
-        node.setBattery(Battery.builder().id(batteryId).build());
+        Node node = nodeRepositoryCustom.findByIdBattery(nodeId);
+        node.setInformation(nodeUpdateRequest.getInformation());
+        node.setType(nodeUpdateRequest.getType());
+        node.setName(nodeUpdateRequest.getName());
+        node.setBattery(batteryService.findById(batteryId).toEntity());
         nodeRepository.save(node);
     }
 

@@ -1,10 +1,8 @@
 package com.graduatioinProject.sensorMonitoring.productData.battery.service;
 
-import com.graduatioinProject.sensorMonitoring.MemberSite.entity.MemberSite;
 import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
-import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryRequest;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponse;
 import com.graduatioinProject.sensorMonitoring.productData.battery.dto.BatteryResponseWithNode;
@@ -17,7 +15,6 @@ import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import com.graduatioinProject.sensorMonitoring.productData.site.service.SiteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +53,7 @@ public class BatteryService {
     }
 
     public BatteryResponseWithSite findByIdWithSite(Long id) {
-        return batteryRepositoryCustom.findByIdWithSite(id);
+        return batteryRepositoryCustom.findByIdWithSite(id).toResponseWithSite();
     }
     @Transactional(rollbackFor = Exception.class)
     public BatteryResponse save(BatteryRequest batteryRequest, Long siteId) {
@@ -67,10 +64,12 @@ public class BatteryService {
 
     @Transactional(rollbackFor = Exception.class)
     public void update(BatteryRequest batteryRequest, Long siteId, Long batteryId) {
-        Battery battery = batteryRequest.toEntity();
-        battery.setId(batteryId);
-        battery.setSite(Site.builder().id(siteId).build());
-        this.save(battery);
+        Battery battery = batteryRepositoryCustom.findByIdWithSite(batteryId);
+        battery.setInformation(batteryRequest.getInformation());
+        battery.setName(batteryRequest.getName());
+        battery.setType(batteryRequest.getType());
+        battery.setSite(siteService.findById(siteId).toEntity());
+        batteryRepository.save(battery);
     }
 
     @Transactional(rollbackFor = Exception.class)

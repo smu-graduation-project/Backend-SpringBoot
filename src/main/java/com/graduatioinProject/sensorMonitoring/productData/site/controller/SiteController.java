@@ -1,12 +1,11 @@
 package com.graduatioinProject.sensorMonitoring.productData.site.controller;
 
 import com.graduatioinProject.sensorMonitoring.MemberSite.service.MemberSiteService;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheck;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.LoginCheckAdmin;
-import com.graduatioinProject.sensorMonitoring.baseUtil.aop.SiteUser;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheck;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.LoginCheckAdmin;
+import com.graduatioinProject.sensorMonitoring.baseUtil.Aop.SiteUser;
 import com.graduatioinProject.sensorMonitoring.baseUtil.config.service.JwtService;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.CommonResult;
-import com.graduatioinProject.sensorMonitoring.baseUtil.dto.ListResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.dto.SingleResult;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
 import com.graduatioinProject.sensorMonitoring.baseUtil.service.ResponseService;
@@ -92,7 +91,7 @@ public class SiteController {
             }
             return responseService.listResult(
                     memberSiteService.getSiteList(userName));
-//          return responseService.listResult(siteService.findAll());
+//            return responseService.listResult(siteService.findAll());
         } catch (Exception e){
             return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }

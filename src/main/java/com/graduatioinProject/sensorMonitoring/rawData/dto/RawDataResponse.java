@@ -8,8 +8,9 @@ import lombok.Data;
 public class RawDataResponse {
 	private Long nodePort;
 	private String timeStamp;
-	private Integer sequence;
+	private Long sequence;
 	private Double temperature;
 	private Double voltage;
-	private String electricCurrent;
+	private Double electricCurrent;
+
 }

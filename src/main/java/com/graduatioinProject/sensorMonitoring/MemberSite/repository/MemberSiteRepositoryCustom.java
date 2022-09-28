@@ -25,5 +25,12 @@ public class MemberSiteRepositoryCustom {
                 .where(qMemberSite.member.username.eq(memberName))
                 .fetch();
     }
+
+    public List<MemberSite> getSiteIdListALL() {
+        QMemberSite qMemberSite = QMemberSite.memberSite;
+        return jpaQueryFactory
+                .selectFrom(qMemberSite)
+                .fetch();
+    }
 }
 

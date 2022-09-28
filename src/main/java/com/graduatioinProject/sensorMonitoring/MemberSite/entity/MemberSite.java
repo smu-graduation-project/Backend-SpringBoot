@@ -1,5 +1,6 @@
 package com.graduatioinProject.sensorMonitoring.MemberSite.entity;
 
+import com.graduatioinProject.sensorMonitoring.MemberSite.dto.MemberSiteResponse;
 import com.graduatioinProject.sensorMonitoring.member.entity.Member;
 import com.graduatioinProject.sensorMonitoring.productData.site.entity.Site;
 import lombok.*;
@@ -30,4 +31,11 @@ public class MemberSite {
     @ManyToOne
     @JoinColumn(name = "site_id")
     private Site site;
+
+    public MemberSiteResponse toResponse() {
+        return MemberSiteResponse.builder()
+                .siteId(this.site.getId())
+                .userName(this.member.getUsername())
+                .build();
+    }
 }

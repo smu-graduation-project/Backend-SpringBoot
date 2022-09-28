@@ -2,7 +2,6 @@ package com.graduatioinProject.sensorMonitoring.productData.site.service;
 
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.BussinessException;
 import com.graduatioinProject.sensorMonitoring.baseUtil.exception.ExMessage;
-import com.graduatioinProject.sensorMonitoring.member.service.MemberService;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteRequest;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponse;
 import com.graduatioinProject.sensorMonitoring.productData.site.dto.SiteResponseWithBattery;
@@ -11,12 +10,11 @@ import com.graduatioinProject.sensorMonitoring.productData.site.repository.SiteR
 import com.graduatioinProject.sensorMonitoring.productData.site.repository.SiteRepositoryCustom;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -53,12 +51,15 @@ public class SiteService {
 
     @Transactional(rollbackFor = Exception.class)
     public void update(SiteRequest siteRequest, Long id) {
-        this.findById(id); // 해당 id가 존재하는지 확인
-        siteRepository.save(siteRequest.toEntity());
+        this.findById(id);
+        // 해당 id가 존재하는지 확인
+        Site site = siteRequest.toEntity();
+        site.setId(id);
+        siteRepository.save(site);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long siteId) {
-        siteRepository.delete(siteRepository.getById(siteId));
+        siteRepository.deleteById(siteId);
     }
 }
