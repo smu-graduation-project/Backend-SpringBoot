@@ -85,14 +85,13 @@ public class SiteController {
     @GetMapping("/all")
     public CommonResult getAllNodeMember(HttpServletRequest httpServletRequest) {
         try {
-//            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
-//            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
-//                return responseService.listResult(siteService.findAll());
-//            }
-//            return responseService.listResult(
-//                    memberSiteService.getSiteList(userName));
-//          return responseService.listResult(siteService.findAll());
-            return responseService.listResult(siteService.findAll());
+            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
+                return responseService.listResult(siteService.findAll());
+            }
+            return responseService.listResult(
+                    memberSiteService.getSiteList(userName));
+//            return responseService.listResult(siteService.findAll());
         } catch (Exception e){
             return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }

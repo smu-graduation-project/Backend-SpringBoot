@@ -42,7 +42,9 @@ public class NodeService {
     @Transactional(rollbackFor = Exception.class)
     public void update(NodeRequest nodeUpdateRequest, Long batteryId, Long nodeId) {
         Node node = nodeRepositoryCustom.findByIdBattery(nodeId);
-        node.setId(nodeId);
+        node.setInformation(nodeUpdateRequest.getInformation());
+        node.setType(nodeUpdateRequest.getType());
+        node.setName(nodeUpdateRequest.getName());
         node.setBattery(batteryService.findById(batteryId).toEntity());
         nodeRepository.save(node);
     }

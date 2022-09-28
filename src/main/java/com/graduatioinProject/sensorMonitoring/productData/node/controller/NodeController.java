@@ -97,16 +97,16 @@ public class NodeController {
     public CommonResult getAllNode(HttpServletRequest httpServletRequest) {
 
         try {
-//            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
-//            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
-//                return responseService.listResult(nodeService.findAll());
-//            }
-//            return responseService.listResult(
-//                    nodeService.findAll()
-//                            .stream()
-//                            .filter(i -> nodeService.chekMemberAuthorityUser(userName, i.getId()))
-//                            .collect(Collectors.toList()));
-            return responseService.listResult(nodeService.findAll());
+            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
+                return responseService.listResult(nodeService.findAll());
+            }
+            return responseService.listResult(
+                    nodeService.findAll()
+                            .stream()
+                            .filter(i -> nodeService.chekMemberAuthorityUser(userName, i.getId()))
+                            .collect(Collectors.toList()));
+//            return responseService.listResult(nodeService.findAll());
         } catch (Exception e){
             return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }

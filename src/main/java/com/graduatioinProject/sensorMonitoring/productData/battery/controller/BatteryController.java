@@ -105,17 +105,17 @@ public class BatteryController {
     public CommonResult getAllNode(HttpServletRequest httpServletRequest) {
 
         try {
-//            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
-//            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
-//                return responseService.listResult(batteryService.findAll());
-//            }
-//
-//            return responseService.listResult(
-//                    batteryService.findAll()
-//                            .stream()
-//                            .filter(i -> batteryService.chekMemberAuthorityUser(userName, i.getId()))
-//                            .collect(Collectors.toList()));
-            return responseService.listResult(batteryService.findAll());
+            String userName = jwtService.decode(httpServletRequest.getHeader("Authorization"));
+            if (memberService.findByUsername(userName).getRole().equals(Role.ADMIN.getName())) {
+                return responseService.listResult(batteryService.findAll());
+            }
+
+            return responseService.listResult(
+                    batteryService.findAll()
+                            .stream()
+                            .filter(i -> batteryService.chekMemberAuthorityUser(userName, i.getId()))
+                            .collect(Collectors.toList()));
+//            return responseService.listResult(batteryService.findAll());
         } catch (Exception e){
             return responseService.failResult(ExMessage.DATA_ERROR_NOT_FOUND.getMessage());
         }
